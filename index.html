@@ -2334,16 +2334,15 @@
       const item = state.history[idx];
       if (!item) return;
 
-      const hasDetails = item.parts || item.coffer || item.pointsEarned;
-      if (hasDetails && !keepInCoffer) {
+      if (!keepInCoffer) {
         const delta = Number(item.delta || 0);
         if (item.parts) {
           COFFER_KEYS.forEach((k) => {
-            state.balances[k] = Math.max(0, Number((state.balances[k] - (item.parts[k] || 0)).toFixed(2)));
+            state.balances[k] = Math.max(0, Number((state.balances[k] - Number(item.parts[k] || 0)).toFixed(2)));
           });
-        } else if (item.coffer) {
+        } else if (item.coffer && COFFER_KEYS.includes(item.coffer)) {
           if (delta < 0) {
-            state.balances[item.coffer] = Number((state.balances[item.coffer] + Math.abs(delta)).toFixed(2));
+            state.balances[item.coffer] = Math.max(0, Number((state.balances[item.coffer] - Math.abs(delta)).toFixed(2)));
             if (item.coffer === "doacao" && item.pointsEarned) {
               state.charityPoints = Math.max(0, Number((state.charityPoints - item.pointsEarned).toFixed(2)));
             }
@@ -2355,6 +2354,14 @@
             }
           } else if (delta > 0) {
             state.balances[item.coffer] = Math.max(0, Number((state.balances[item.coffer] - delta).toFixed(2)));
+          }
+        } else if (delta !== 0) {
+          const absVal = Math.abs(delta);
+          const matchedKey = COFFER_KEYS.find((k) =>
+            String(item.title || "").toLowerCase().includes(COFFER_META[k].name.toLowerCase())
+          );
+          if (matchedKey) {
+            state.balances[matchedKey] = Math.max(0, Number((state.balances[matchedKey] - absVal).toFixed(2)));
           }
         }
       }
@@ -2740,12 +2747,6 @@
         return;
       }
 
-      const hasDetails = item.parts || item.coffer || item.pointsEarned;
-      if (!hasDetails) {
-        finalizeDeleteHistoryItem(idx, true);
-        return;
-      }
-
       pendingUndoIdx = null;
       pendingKeepInCofferIdx = pendingKeepInCofferIdx === idx ? null : idx;
       renderHistory();
@@ -2963,7 +2964,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         const swCode = `
-          const CACHE_NAME = "cofre-magico-v15";
+          const CACHE_NAME = "cofre-magico-v16";
           self.addEventListener("install", (e) => {
             e.waitUntil(
               caches.open(CACHE_NAME).then((cache) => cache.addAll(["./", "./index.html"]))
