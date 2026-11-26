@@ -1183,7 +1183,7 @@
     const STORAGE_KEY = "os_meus_4_cofres_state_v2";
     const COFFER_KEYS = ["poupar", "sonhos", "liberdade", "doacao"];
     const GOAL_COFFERS = ["sonhos", "liberdade"];
-    const STAR_MILESTONES = [50, 100, 150, 200, 250];
+    const STAR_MILESTONES = [25, 50, 75, 100, 150];
     const POINTS_PER_BONUS = 10;
     const BONUS_AMOUNT = 5;
 
@@ -1511,6 +1511,7 @@
     function renderTopRewards() {
       renderMedalRewardsBar();
 
+      // 1. 5 estrelas para O Meu Futuro (25, 50, 75, 100, 150 €)
       const futureBal = Number(state.balances.poupar || 0);
       let earnedStars = 0;
       STAR_MILESTONES.forEach((milestone) => {
@@ -2245,7 +2246,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         const swCode = `
-          const CACHE_NAME = "cofre-magico-v8";
+          const CACHE_NAME = "cofre-magico-v9";
           self.addEventListener("install", (e) => {
             e.waitUntil(
               caches.open(CACHE_NAME).then((cache) => cache.addAll(["./", "./index.html"]))
