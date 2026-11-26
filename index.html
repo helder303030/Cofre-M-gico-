@@ -1177,6 +1177,7 @@
     .undo-confirm-btns {
       display: flex;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
     .btn-confirm-yes {
@@ -1644,6 +1645,7 @@
     let state = loadState();
     let selectedMonthKey = "";
     let pendingUndoIdx = null;
+    let pendingDeleteIdx = null;
     let activeCofferDrawer = { coffer: null, mode: null, msg: "" };
     let historyCollapsed = false;
     const openGoalEditors = { sonhos: false, liberdade: false };
@@ -2264,18 +2266,45 @@
       const container = document.getElementById("historyList");
       if (!state.history.length) {
         pendingUndoIdx = null;
+        pendingDeleteIdx = null;
         container.innerHTML = `<div class="small-note">Ainda não existem movimentos registados.</div>`;
         return;
       }
 
-      if (pendingUndoIdx !== null && pendingUndoIdx >= Math.min(state.history.length, 20)) {
+      const maxVisible = Math.min(state.history.length, 20);
+      if (pendingUndoIdx !== null && pendingUndoIdx >= maxVisible) {
         pendingUndoIdx = null;
+      }
+      if (pendingDeleteIdx !== null && pendingDeleteIdx >= maxVisible) {
+        pendingDeleteIdx = null;
       }
 
       container.innerHTML = state.history
         .slice(0, 20)
         .map((item, idx) => {
-          const isConfirmOpen = pendingUndoIdx === idx;
+          const isUndoOpen = pendingUndoIdx === idx;
+          const isDeleteOpen = pendingDeleteIdx === idx;
+          const delta = Number(item.delta || 0);
+          const hasDetails = Boolean(item.parts || item.coffer || item.pointsEarned);
+          const cofferName = item.coffer && COFFER_META[item.coffer] ? COFFER_META[item.coffer].name : "respetivo cofre";
+
+          let deletePromptText = `Apagar o movimento "${escapeHtml(item.title)}"?`;
+          let yesLabel = "Sim, devolver ao cofre";
+          let noLabel = "Não, só apagar";
+
+          if (!hasDetails) {
+            yesLabel = "Sim, apagar";
+            noLabel = "Cancelar";
+          } else if (delta < 0) {
+            deletePromptText = `Apagar retirada de ${fmtEUR(Math.abs(delta))} (${escapeHtml(item.title)}) — quer devolver o valor ao cofre ${escapeHtml(cofferName)}?`;
+            yesLabel = "Sim, devolver ao cofre";
+            noLabel = "Não, deixar sair";
+          } else {
+            deletePromptText = `Apagar entrada de ${fmtEUR(delta)} (${escapeHtml(item.title)}) — quer manter o valor no cofre?`;
+            yesLabel = "Sim, manter no cofre";
+            noLabel = "Não, retirar do cofre";
+          }
+
           return `
             <div class="history-entry">
               <div class="history-item">
@@ -2292,7 +2321,7 @@
                 </div>
               </div>
               ${
-                isConfirmOpen
+                isUndoOpen
                   ? `
                     <div class="undo-confirm-box">
                       <span>Voltar atrás e deixar como estava antes?</span>
@@ -2304,10 +2333,79 @@
                   `
                   : ""
               }
+              ${
+                isDeleteOpen
+                  ? `
+                    <div class="undo-confirm-box">
+                      <span>${deletePromptText}</span>
+                      <div class="undo-confirm-btns">
+                        <button type="button" class="btn-confirm-yes" data-del-choice="yes" data-idx="${idx}">${yesLabel}</button>
+                        <button type="button" class="btn-confirm-no" data-del-choice="no" data-idx="${idx}">${noLabel}</button>
+                        <button type="button" class="btn-confirm-no" data-del-choice="cancel" data-idx="${idx}">Cancelar</button>
+                      </div>
+                    </div>
+                  `
+                  : ""
+              }
             </div>
           `;
         })
         .join("");
+    }
+
+    function executeDeleteHistoryItem(idx, option) {
+      const item = state.history[idx];
+      if (!item) return;
+
+      const delta = Number(item.delta || 0);
+      const hasDetails = Boolean(item.parts || item.coffer || item.pointsEarned);
+
+      if (hasDetails) {
+        if (delta < 0) {
+          // Movimento foi uma retirada/saída:
+          // option === "yes" -> o dinheiro volta para o cofre
+          // option === "no"  -> o dinheiro NÃO volta para o cofre e desaparece juntamente com o movimento
+          if (option === "yes" && item.coffer && COFFER_KEYS.includes(item.coffer)) {
+            state.balances[item.coffer] = Number(
+              (Number(state.balances[item.coffer] || 0) + Math.abs(delta)).toFixed(2)
+            );
+            if (item.coffer === "doacao" && item.pointsEarned) {
+              state.charityPoints = Math.max(0, Number((state.charityPoints - item.pointsEarned).toFixed(2)));
+            }
+            if (GOAL_COFFERS.includes(item.coffer) && item.previousStreakStart) {
+              state.streakStart[item.coffer] = item.previousStreakStart;
+              if (item.previousClaimedMedals) {
+                state.claimedMedals[item.coffer] = { ...item.previousClaimedMedals };
+              }
+            }
+          }
+        } else {
+          // Movimento foi uma entrada:
+          // option === "yes" -> mantém o valor no respetivo cofre
+          // option === "no"  -> retira o valor do respetivo cofre ao apagar
+          if (option === "no") {
+            if (item.parts) {
+              COFFER_KEYS.forEach((k) => {
+                state.balances[k] = Math.max(0, Number((state.balances[k] - (item.parts[k] || 0)).toFixed(2)));
+              });
+            } else if (item.coffer && COFFER_KEYS.includes(item.coffer) && delta > 0) {
+              state.balances[item.coffer] = Math.max(0, Number((state.balances[item.coffer] - delta).toFixed(2)));
+            }
+          }
+        }
+      }
+
+      pendingUndoIdx = null;
+      pendingDeleteIdx = null;
+      state.history.splice(idx, 1);
+      saveState();
+      renderAll();
+
+      if (delta < 0 && option === "yes") {
+        showFeedbackBanner("Movimento apagado e valor devolvido ao cofre.", "info");
+      } else if (delta < 0 && option === "no") {
+        showFeedbackBanner("Movimento apagado sem devolver o valor ao cofre.", "info");
+      }
     }
 
     function undoHistoryItem(idx) {
@@ -2339,6 +2437,7 @@
 
       state.history.splice(idx, 1);
       pendingUndoIdx = null;
+      pendingDeleteIdx = null;
       saveState();
       renderAll();
       showFeedbackBanner("Movimento anulado — tudo voltou ao estado anterior.", "info");
@@ -2423,6 +2522,7 @@
           state = loadState();
           selectedMonthKey = "";
           pendingUndoIdx = null;
+          pendingDeleteIdx = null;
           activeCofferDrawer = { coffer: null, mode: null, msg: "" };
           renderAll();
           showFeedbackBanner("Dados importados com sucesso!", "info");
@@ -2501,6 +2601,7 @@
         const monthKey = getCurrentMonthKey(nowObj);
         selectedMonthKey = monthKey;
         pendingUndoIdx = null;
+        pendingDeleteIdx = null;
         activeCofferDrawer = { coffer: null, mode: null, msg: "" };
 
         state.history.unshift({
@@ -2544,6 +2645,7 @@
         const monthKey = getCurrentMonthKey(nowObj);
         selectedMonthKey = monthKey;
         pendingUndoIdx = null;
+        pendingDeleteIdx = null;
         activeCofferDrawer = { coffer: null, mode: null, msg: "" };
 
         state.history.unshift({
@@ -2635,6 +2737,7 @@
       const undoBtn = e.target.closest("[data-undo-idx]");
       if (undoBtn) {
         const idx = parseInt(undoBtn.dataset.undoIdx, 10);
+        pendingDeleteIdx = null;
         pendingUndoIdx = pendingUndoIdx === idx ? null : idx;
         renderHistory();
         return;
@@ -2654,6 +2757,19 @@
         return;
       }
 
+      const delChoiceBtn = e.target.closest("[data-del-choice]");
+      if (delChoiceBtn) {
+        const choice = delChoiceBtn.dataset.delChoice;
+        const idx = parseInt(delChoiceBtn.dataset.idx, 10);
+        if (choice === "cancel") {
+          pendingDeleteIdx = null;
+          renderHistory();
+          return;
+        }
+        executeDeleteHistoryItem(idx, choice);
+        return;
+      }
+
       const btn = e.target.closest(".btn-del-item");
       if (!btn) return;
 
@@ -2661,41 +2777,9 @@
       const item = state.history[idx];
       if (!item) return;
 
-      if (!confirm(`Queres apagar o movimento "${item.title}" (${fmtEUR(item.delta)})?`)) {
-        return;
-      }
-
-      const hasDetails = item.parts || item.coffer || item.pointsEarned;
-      const keepInCoffer = hasDetails ? confirm("Pretende manter o valor no respetivo cofre?") : true;
-
-      if (hasDetails && !keepInCoffer) {
-        const delta = Number(item.delta || 0);
-        if (item.parts) {
-          COFFER_KEYS.forEach((k) => {
-            state.balances[k] = Math.max(0, Number((state.balances[k] - (item.parts[k] || 0)).toFixed(2)));
-          });
-        } else if (item.coffer) {
-          if (delta < 0) {
-            state.balances[item.coffer] = Number((state.balances[item.coffer] + Math.abs(delta)).toFixed(2));
-            if (item.coffer === "doacao" && item.pointsEarned) {
-              state.charityPoints = Math.max(0, Number((state.charityPoints - item.pointsEarned).toFixed(2)));
-            }
-            if (GOAL_COFFERS.includes(item.coffer) && item.previousStreakStart) {
-              state.streakStart[item.coffer] = item.previousStreakStart;
-              if (item.previousClaimedMedals) {
-                state.claimedMedals[item.coffer] = { ...item.previousClaimedMedals };
-              }
-            }
-          } else if (delta > 0) {
-            state.balances[item.coffer] = Math.max(0, Number((state.balances[item.coffer] - delta).toFixed(2)));
-          }
-        }
-      }
-
       pendingUndoIdx = null;
-      state.history.splice(idx, 1);
-      saveState();
-      renderAll();
+      pendingDeleteIdx = pendingDeleteIdx === idx ? null : idx;
+      renderHistory();
     });
 
     document.querySelectorAll(".type-btn").forEach((btn) => {
@@ -2746,6 +2830,7 @@
       const monthKey = getCurrentMonthKey(nowObj);
       selectedMonthKey = monthKey;
       pendingUndoIdx = null;
+      pendingDeleteIdx = null;
 
       state.history.unshift({
         title: `Entrada (${state.mode === "mesada" ? "Mesada" : "Presente"})`,
@@ -2826,6 +2911,7 @@
       const monthKey = getCurrentMonthKey(nowObj);
       selectedMonthKey = monthKey;
       pendingUndoIdx = null;
+      pendingDeleteIdx = null;
       const cofferLabel = COFFER_META[coffer]?.name || coffer;
 
       state.history.unshift({
@@ -2899,6 +2985,7 @@
         liberdade: new Date().toISOString()
       };
       pendingUndoIdx = null;
+      pendingDeleteIdx = null;
       activeCofferDrawer = { coffer: null, mode: null, msg: "" };
       saveState();
       renderAll();
