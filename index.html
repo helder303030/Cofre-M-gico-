@@ -2449,4 +2449,541 @@
       const dataStr = JSON.stringify(state, null, 2);
       const blob = new Blob([dataStr], { type: "application/json" });
       const url = URL.createObjectURL(blob);
-      
+      const a = document.createElement("a");
+      const today = new Date().toISOString().slice(0, 10);
+      a.href = url;
+      a.download = `cofre-magico-backup-${today}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("importDataBtn").addEventListener("click", () => {
+      document.getElementById("importFileInput").click();
+    });
+
+    document.getElementById("importFileInput").addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(String(reader.result || "{}"));
+          if (!imported || typeof imported !== "object" || !imported.balances) {
+            alert("Ficheiro inválido.");
+            return;
+          }
+          if (!confirm("Substituir os dados atuais pelos dados deste ficheiro?")) return;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(imported));
+          state = loadState();
+          selectedMonthKey = "";
+          pendingUndoIdx = null;
+          pendingKeepInCofferIdx = null;
+          activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+          renderAll();
+          showFeedbackBanner("Dados importados com sucesso!", "info");
+        } catch {
+          alert("Não foi possível ler o ficheiro selecionado.");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = "";
+    });
+
+    document.querySelector(".coffers-grid").addEventListener("click", (e) => {
+      const emptyToggle = e.target.closest("[data-empty-toggle]");
+      if (emptyToggle) {
+        const k = emptyToggle.dataset.emptyToggle;
+        if (Number(state.balances[k] || 0) <= 0) {
+          activeCofferDrawer = { coffer: k, mode: "empty", msg: "Este cofre já está a 0,00 €." };
+        } else if (activeCofferDrawer.coffer === k && activeCofferDrawer.mode === "empty") {
+          activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+        } else {
+          activeCofferDrawer = { coffer: k, mode: "empty", msg: "" };
+        }
+        renderCofferDrawers();
+        return;
+      }
+
+      const addToggle = e.target.closest("[data-add-toggle]");
+      if (addToggle) {
+        const k = addToggle.dataset.addToggle;
+        if (activeCofferDrawer.coffer === k && activeCofferDrawer.mode === "add") {
+          activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+        } else {
+          activeCofferDrawer = { coffer: k, mode: "add", msg: "" };
+        }
+        renderCofferDrawers();
+        return;
+      }
+
+      const cancelDrawer = e.target.closest("[data-drawer-cancel]");
+      if (cancelDrawer) {
+        activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+        renderCofferDrawers();
+        return;
+      }
+
+      const emptyConfirm = e.target.closest("[data-empty-confirm]");
+      if (emptyConfirm) {
+        const k = emptyConfirm.dataset.emptyConfirm;
+        const currentBal = Number(state.balances[k] || 0);
+        if (currentBal <= 0) {
+          activeCofferDrawer = { coffer: k, mode: "empty", msg: "Este cofre já está vazio." };
+          renderCofferDrawers();
+          return;
+        }
+
+        const previousStreakStart = GOAL_COFFERS.includes(k) ? state.streakStart[k] : null;
+        const previousClaimedMedals = GOAL_COFFERS.includes(k)
+          ? { ...(state.claimedMedals[k] || { bronze: false, silver: false, gold: false }) }
+          : null;
+
+        state.balances[k] = 0;
+
+        if (GOAL_COFFERS.includes(k)) {
+          state.streakStart[k] = new Date().toISOString();
+          state.claimedMedals[k] = { bronze: false, silver: false, gold: false };
+        }
+
+        const nowObj = new Date();
+        const now = nowObj.toLocaleString("pt-PT", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+        const monthKey = getCurrentMonthKey(nowObj);
+        selectedMonthKey = monthKey;
+        pendingUndoIdx = null;
+        pendingKeepInCofferIdx = null;
+        activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+
+        state.history.unshift({
+          title: `Esvaziar cofre (${COFFER_META[k].name})`,
+          date: now,
+          monthKey,
+          delta: -currentBal,
+          coffer: k,
+          pointsEarned: 0,
+          previousStreakStart,
+          previousClaimedMedals
+        });
+
+        saveState();
+        renderAll();
+        return;
+      }
+
+      const addConfirm = e.target.closest("[data-add-confirm]");
+      if (addConfirm) {
+        const k = addConfirm.dataset.addConfirm;
+        const inp = document.getElementById(`add-coffer-input-${k}`);
+        const amount = parseFloat(inp?.value || "");
+        if (!Number.isFinite(amount) || amount <= 0) {
+          activeCofferDrawer = { coffer: k, mode: "add", msg: "Indica um valor maior que 0 €." };
+          renderCofferDrawers();
+          return;
+        }
+
+        const rounded = Number(amount.toFixed(2));
+        state.balances[k] = Number((Number(state.balances[k] || 0) + rounded).toFixed(2));
+
+        const nowObj = new Date();
+        const now = nowObj.toLocaleString("pt-PT", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+        const monthKey = getCurrentMonthKey(nowObj);
+        selectedMonthKey = monthKey;
+        pendingUndoIdx = null;
+        pendingKeepInCofferIdx = null;
+        activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+
+        state.history.unshift({
+          title: `Adicionar fundos (${COFFER_META[k].name})`,
+          date: now,
+          monthKey,
+          delta: rounded,
+          coffer: k
+        });
+
+        saveState();
+        renderAll();
+        return;
+      }
+
+      const editBtn = e.target.closest("[data-goal-edit]");
+      if (editBtn) {
+        const k = editBtn.dataset.goalEdit;
+        openGoalEditors[k] = !openGoalEditors[k];
+        renderCofferExtras();
+        return;
+      }
+
+      const saveBtn = e.target.closest("[data-goal-save]");
+      if (saveBtn) {
+        const k = saveBtn.dataset.goalSave;
+        const titleInput = document.getElementById(`goal-title-${k}`).value.trim();
+        const targetRaw = parseFloat(document.getElementById(`goal-target-${k}`).value);
+        const targetVal = Number.isFinite(targetRaw) && targetRaw > 0 ? Number(targetRaw.toFixed(2)) : 0;
+
+        state.goals[k] = {
+          title: titleInput,
+          target: targetVal
+        };
+        openGoalEditors[k] = false;
+        saveState();
+        renderCofferExtras();
+      }
+    });
+
+    document.getElementById("claimBonusBtn").addEventListener("click", () => {
+      const pts = Number(state.charityPoints || 0);
+      if (pts < POINTS_PER_BONUS) return;
+
+      const parts = splitAmount(BONUS_AMOUNT, state.rules.mesada);
+      COFFER_KEYS.forEach((k) => {
+        state.balances[k] = Number((state.balances[k] + parts[k]).toFixed(2));
+      });
+
+      state.charityPoints = Number((pts - POINTS_PER_BONUS).toFixed(2));
+
+      const nowObj = new Date();
+      const now = nowObj.toLocaleString("pt-PT", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+      const monthKey = getCurrentMonthKey(nowObj);
+      selectedMonthKey = monthKey;
+
+      state.history.unshift({
+        title: "Bónus Solidariedade (10 pts → 5,00 € distribuídos)",
+        date: now,
+        monthKey,
+        delta: BONUS_AMOUNT,
+        parts
+      });
+
+      saveState();
+      renderAll();
+      showFeedbackBanner(
+        `Recebeste ${fmtEUR(BONUS_AMOUNT)} de bónus pela tua solidariedade e foram divididos pelos 4 cofres!`,
+        "info"
+      );
+    });
+
+    document.getElementById("monthSelect").addEventListener("change", (e) => {
+      selectedMonthKey = e.target.value;
+      renderMonthlySection();
+    });
+
+    document.getElementById("chartMetricSelect").addEventListener("change", () => {
+      renderMonthlySection();
+    });
+
+    document.getElementById("historyList").addEventListener("click", (e) => {
+      const undoBtn = e.target.closest("[data-undo-idx]");
+      if (undoBtn) {
+        const idx = parseInt(undoBtn.dataset.undoIdx, 10);
+        pendingKeepInCofferIdx = null;
+        pendingUndoIdx = pendingUndoIdx === idx ? null : idx;
+        renderHistory();
+        return;
+      }
+
+      const cancelBtn = e.target.closest("[data-undo-cancel]");
+      if (cancelBtn) {
+        pendingUndoIdx = null;
+        renderHistory();
+        return;
+      }
+
+      const confirmUndoBtn = e.target.closest("[data-undo-confirm]");
+      if (confirmUndoBtn) {
+        const idx = parseInt(confirmUndoBtn.dataset.undoConfirm, 10);
+        undoHistoryItem(idx);
+        return;
+      }
+
+      const keepYesBtn = e.target.closest("[data-keep-yes]");
+      if (keepYesBtn) {
+        const idx = parseInt(keepYesBtn.dataset.keepYes, 10);
+        finalizeDeleteHistoryItem(idx, true);
+        return;
+      }
+
+      const keepNoBtn = e.target.closest("[data-keep-no]");
+      if (keepNoBtn) {
+        const idx = parseInt(keepNoBtn.dataset.keepNo, 10);
+        finalizeDeleteHistoryItem(idx, false);
+        return;
+      }
+
+      const btn = e.target.closest(".btn-del-item");
+      if (!btn) return;
+
+      const idx = parseInt(btn.dataset.idx, 10);
+      const item = state.history[idx];
+      if (!item) return;
+
+      if (!confirm(`Queres apagar o movimento "${item.title}" (${fmtEUR(item.delta)})?`)) {
+        return;
+      }
+
+      pendingUndoIdx = null;
+      pendingKeepInCofferIdx = pendingKeepInCofferIdx === idx ? null : idx;
+      renderHistory();
+    });
+
+    document.querySelectorAll(".type-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.mode = btn.dataset.type;
+        saveState();
+        renderAll();
+      });
+    });
+
+    document.getElementById("amountInput").addEventListener("input", renderPreview);
+
+    document.querySelectorAll(".chip-btn[data-add]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const current = parseFloat(document.getElementById("amountInput").value) || 0;
+        const next = current + parseFloat(btn.dataset.add);
+        document.getElementById("amountInput").value = next.toFixed(2);
+        renderPreview();
+      });
+    });
+
+    document.getElementById("clearAmountBtn").addEventListener("click", () => {
+      document.getElementById("amountInput").value = "";
+      renderPreview();
+    });
+
+    document.getElementById("distributeBtn").addEventListener("click", () => {
+      const amount = parseFloat(document.getElementById("amountInput").value);
+      if (!Number.isFinite(amount) || amount <= 0) {
+        alert("Escreve primeiro um valor maior que 0 €.");
+        return;
+      }
+
+      const parts = splitAmount(amount, state.rules[state.mode]);
+      COFFER_KEYS.forEach((k) => {
+        state.balances[k] = Number((state.balances[k] + parts[k]).toFixed(2));
+      });
+
+      const nowObj = new Date();
+      const now = nowObj.toLocaleString("pt-PT", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
+      const monthKey = getCurrentMonthKey(nowObj);
+      selectedMonthKey = monthKey;
+      pendingUndoIdx = null;
+      pendingKeepInCofferIdx = null;
+
+      state.history.unshift({
+        title: `Entrada (${state.mode === "mesada" ? "Mesada" : "Presente"})`,
+        date: now,
+        monthKey,
+        delta: amount,
+        parts: parts
+      });
+
+      document.getElementById("amountInput").value = "";
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById("spendBtn").addEventListener("click", () => {
+      const coffer = document.getElementById("spendCoffer").value;
+      const amount = parseFloat(document.getElementById("spendAmount").value);
+      const note = document.getElementById("spendNote").value.trim();
+      const statusEl = document.getElementById("spendStatus");
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        statusEl.textContent = "Indica um valor válido maior que 0 €.";
+        return;
+      }
+
+      if (amount > state.balances[coffer]) {
+        statusEl.textContent = "Saldo insuficiente nesse cofre.";
+        return;
+      }
+
+      if (GOAL_COFFERS.includes(coffer)) {
+        const status = getMedalStatus(coffer);
+        const config = MEDAL_CONFIG[coffer];
+
+        let medalWarning = "";
+        if (status.daysToNext > 0) {
+          medalWarning = `\n\nAtenção: faltam ${status.daysToNext} dias para atingir a medalha de ${status.nextTier.name} (${status.nextTier.days} dias • +${fmtEUR(status.nextTier.reward)}). Se retirares agora, a contagem volta ao zero — tens a certeza de que queres perder essa recompensa?`;
+        } else {
+          medalWarning = `\n\nAtenção: se retirares agora em ${config.label}, a contagem de dias sem mexer volta ao zero. Tens a certeza?`;
+        }
+
+        const confirmed = confirm(
+          `Antes de retirar ${fmtEUR(amount)} de ${COFFER_META[coffer].name}:\nIsto é uma vontade do momento ou já estava planeado há algum tempo?${medalWarning}`
+        );
+        if (!confirmed) {
+          statusEl.textContent = "Retirada cancelada. O teu cofre continua intacto!";
+          return;
+        }
+      }
+
+      const previousStreakStart = GOAL_COFFERS.includes(coffer) ? state.streakStart[coffer] : null;
+      const previousClaimedMedals = GOAL_COFFERS.includes(coffer)
+        ? { ...(state.claimedMedals[coffer] || { bronze: false, silver: false, gold: false }) }
+        : null;
+
+      state.balances[coffer] = Number((state.balances[coffer] - amount).toFixed(2));
+
+      if (GOAL_COFFERS.includes(coffer)) {
+        state.streakStart[coffer] = new Date().toISOString();
+        state.claimedMedals[coffer] = { bronze: false, silver: false, gold: false };
+      }
+
+      let pointsEarned = 0;
+      if (coffer === "doacao") {
+        pointsEarned = Number(amount.toFixed(2));
+        state.charityPoints = Number(((state.charityPoints || 0) + pointsEarned).toFixed(2));
+      }
+
+      const nowObj = new Date();
+      const now = nowObj.toLocaleString("pt-PT", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
+      const monthKey = getCurrentMonthKey(nowObj);
+      selectedMonthKey = monthKey;
+      pendingUndoIdx = null;
+      pendingKeepInCofferIdx = null;
+      const cofferLabel = COFFER_META[coffer]?.name || coffer;
+
+      state.history.unshift({
+        title: note ? `${cofferLabel}: ${note}` : `Saída (${cofferLabel})`,
+        date: now,
+        monthKey,
+        delta: -amount,
+        coffer: coffer,
+        pointsEarned,
+        previousStreakStart,
+        previousClaimedMedals
+      });
+
+      document.getElementById("spendAmount").value = "";
+      document.getElementById("spendNote").value = "";
+      statusEl.textContent = "Movimento registado com sucesso!";
+      saveState();
+      renderAll();
+
+      if (coffer === "doacao") {
+        showFeedbackBanner(
+          `Parabéns por ajudares quem mais precisa, continua a ajudar para ganhares pontos. (+${fmtPts(pointsEarned)} pts)`,
+          "charity"
+        );
+      } else {
+        showFeedbackBanner("", "info");
+        document.getElementById("actionFeedback").style.display = "none";
+      }
+    });
+
+    document.getElementById("toggleConfigBtn").addEventListener("click", () => {
+      document.getElementById("configPanel").classList.toggle("open");
+    });
+
+    document.getElementById("saveRulesBtn").addEventListener("click", () => {
+      const statusEl = document.getElementById("rulesStatus");
+      const nextRules = { mesada: {}, presente: {} };
+
+      for (const mode of ["mesada", "presente"]) {
+        let sum = 0;
+        for (const k of COFFER_KEYS) {
+          const val = parseInt(document.getElementById(`${mode}_${k}`).value, 10);
+          if (!Number.isFinite(val) || val < 0) {
+            statusEl.textContent = "Verifica os valores introduzidos.";
+            return;
+          }
+          nextRules[mode][k] = val;
+          sum += val;
+        }
+        if (sum !== 100) {
+          statusEl.textContent = `As percentagens de "${mode}" têm de somar 100% (atualmente somam ${sum}%).`;
+          return;
+        }
+      }
+
+      state.rules = nextRules;
+      saveState();
+      renderAll();
+      statusEl.textContent = "Percentagens guardadas com sucesso!";
+    });
+
+    document.getElementById("resetAllBtn").addEventListener("click", () => {
+      if (!confirm("Tens a certeza de que queres apagar todos os saldos e movimentos?")) return;
+      const keepRules = state.rules;
+      const keepGoals = state.goals;
+      state = structuredClone(DEFAULT_STATE);
+      state.rules = keepRules;
+      state.goals = keepGoals;
+      state.streakStart = {
+        sonhos: new Date().toISOString(),
+        liberdade: new Date().toISOString()
+      };
+      pendingUndoIdx = null;
+      pendingKeepInCofferIdx = null;
+      activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+      saveState();
+      renderAll();
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        const swCode = `
+          const CACHE_NAME = "cofre-magico-v17";
+          self.addEventListener("install", (e) => {
+            e.waitUntil(
+              caches.open(CACHE_NAME).then((cache) => cache.addAll(["./", "./index.html"]))
+            );
+            self.skipWaiting();
+          });
+          self.addEventListener("fetch", (e) => {
+            if (e.request.method !== "GET") return;
+            e.respondWith(
+              fetch(e.request)
+                .then((res) => {
+                  const clone = res.clone();
+                  caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+                  return res;
+                })
+                .catch(() => caches.match(e.request))
+            );
+          });
+        `;
+        const blob = new Blob([swCode], { type: "application/javascript" });
+        const swUrl = URL.createObjectURL(blob);
+        navigator.serviceWorker.register(swUrl).catch(() => {});
+      });
+    }
+
+    evaluateMedalRewards();
+    renderAll();
+  </script>
+</body>
+</html>
