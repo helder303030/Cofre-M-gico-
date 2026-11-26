@@ -101,11 +101,17 @@
       font-weight: 800;
     }
 
+    .top-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
     .top-rewards-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin-top: 12px;
     }
 
     @media (max-width: 560px) {
@@ -130,6 +136,55 @@
       margin-bottom: 6px;
     }
 
+    .medal-rewards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 520px) {
+      .medal-rewards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .medal-coffer-reward {
+      background: rgba(15, 23, 42, 0.2);
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+
+    .medal-coffer-name {
+      font-size: 0.78rem;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .medal-tiers-strip {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+
+    .tier-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      opacity: 0.75;
+    }
+
+    .tier-pill.earned {
+      background: #fde047;
+      color: #0f172a;
+      border-color: #fde047;
+      opacity: 1;
+    }
+
     .stars-row {
       display: flex;
       align-items: center;
@@ -145,7 +200,7 @@
 
     .reward-caption {
       font-size: 0.78rem;
-      opacity: 0.92;
+      opacity: 0.94;
       line-height: 1.35;
     }
 
@@ -163,6 +218,24 @@
       background: #fde047;
       border-radius: 999px;
       transition: width 0.25s ease;
+    }
+
+    .points-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-pts-adjust {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     .btn-bonus {
@@ -348,6 +421,13 @@
       margin-top: 12px;
     }
 
+    .backup-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
     .coffers-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -371,13 +451,20 @@
       justify-content: space-between;
     }
 
+    .coffer-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
     .coffer-tag {
       display: inline-block;
       font-size: 0.78rem;
       font-weight: 700;
       padding: 4px 10px;
       border-radius: 999px;
-      margin-bottom: 10px;
     }
 
     .tag-poupar { background: var(--poupar-bg); color: var(--poupar-fg); }
@@ -385,10 +472,28 @@
     .tag-liberdade { background: var(--liberdade-bg); color: var(--liberdade-fg); }
     .tag-doacao { background: var(--doacao-bg); color: var(--doacao-fg); }
 
+    .coffer-balance-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .coffer-svg-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+    }
+
     .coffer-balance {
       font-size: 1.5rem;
       font-weight: 800;
-      margin-bottom: 4px;
     }
 
     .coffer-rule {
@@ -775,22 +880,35 @@
       </div>
     </div>
 
-    <div class="top-rewards-grid">
+    <div class="top-stack">
+      <!-- Barra das medalhas por cima da barra das estrelas -->
       <div class="reward-panel">
-        <div class="reward-panel-title">Estrelas • O Meu Futuro</div>
-        <div class="stars-row" id="futureStarsRow"></div>
-        <div class="reward-caption" id="futureStarsCaption"></div>
+        <div class="reward-panel-title">Prémios das Medalhas (50% Liberdade • 50% Futuro)</div>
+        <div class="medal-rewards-grid" id="medalRewardsSummary"></div>
       </div>
 
-      <div class="reward-panel">
-        <div class="reward-panel-title">Pontos Solidariedade (1 € = 1 pt)</div>
-        <div class="points-bar-track">
-          <div class="points-bar-fill" id="charityPointsBar" style="width: 0%;"></div>
+      <!-- Estrelas do Futuro e Pontos de Solidariedade -->
+      <div class="top-rewards-grid">
+        <div class="reward-panel">
+          <div class="reward-panel-title">Estrelas • O Meu Futuro</div>
+          <div class="stars-row" id="futureStarsRow"></div>
+          <div class="reward-caption" id="futureStarsCaption"></div>
         </div>
-        <div class="reward-caption" id="charityPointsCaption"></div>
-        <button type="button" class="btn-bonus" id="claimBonusBtn" style="display: none;">
-          Receber bónus de 5,00 € (distribuir agora)
-        </button>
+
+        <div class="reward-panel">
+          <div class="reward-panel-title">Pontos Solidariedade (1 € = 1 pt)</div>
+          <div class="points-bar-track">
+            <div class="points-bar-fill" id="charityPointsBar" style="width: 0%;"></div>
+          </div>
+          <div class="reward-caption" id="charityPointsCaption"></div>
+          <div class="points-actions">
+            <button type="button" class="btn-pts-adjust" id="removeOnePointBtn">-1 pt</button>
+            <button type="button" class="btn-pts-adjust" id="setPointsBtn">Corrigir pontos</button>
+          </div>
+          <button type="button" class="btn-bonus" id="claimBonusBtn" style="display: none;">
+            Receber bónus de 5,00 € (distribuir agora)
+          </button>
+        </div>
       </div>
     </div>
 
@@ -841,6 +959,19 @@
 
       <button type="button" class="btn-secondary" id="saveRulesBtn">Guardar regras</button>
       <div class="small-note" id="rulesStatus"></div>
+
+      <div style="color: var(--text); font-weight: 700; margin: 14px 0 4px;">
+        Guardar / Transferir dados entre telemóveis
+      </div>
+      <div class="small-note" style="margin-top: 0;">
+        Exporta um ficheiro .json para guardar ou enviar para outro telemóvel e importa aí.
+      </div>
+      <div class="backup-row">
+        <button type="button" class="btn-secondary" style="margin-top: 0;" id="exportDataBtn">Exportar ficheiro</button>
+        <button type="button" class="btn-secondary" style="margin-top: 0;" id="importDataBtn">Importar ficheiro</button>
+      </div>
+      <input type="file" id="importFileInput" accept=".json,application/json" style="display: none;" />
+
       <button type="button" class="btn-danger-outline" id="resetAllBtn">Repor tudo a zero</button>
     </div>
   </div>
@@ -873,16 +1004,38 @@
   <div class="coffers-grid">
     <div class="coffer-card">
       <div>
-        <span class="coffer-tag tag-poupar">O Meu Futuro</span>
-        <div class="coffer-balance" id="bal-poupar">0,00 €</div>
+        <div class="coffer-top-row">
+          <span class="coffer-tag tag-poupar">O Meu Futuro</span>
+        </div>
+        <div class="coffer-balance-row">
+          <div class="coffer-svg-badge" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="6" width="18" height="13" rx="3" fill="#4f46e5" />
+              <circle cx="12" cy="12.5" r="2.6" fill="#fde047" />
+              <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6" stroke="#4f46e5" stroke-width="2" />
+            </svg>
+          </div>
+          <div class="coffer-balance" id="bal-poupar">0,00 €</div>
+        </div>
         <div class="coffer-rule" id="rule-poupar">Mesada: 40% • Presente: 50%</div>
       </div>
     </div>
 
     <div class="coffer-card">
       <div>
-        <span class="coffer-tag tag-sonhos">Sonhos (Grande Brinquedo)</span>
-        <div class="coffer-balance" id="bal-sonhos">0,00 €</div>
+        <div class="coffer-top-row">
+          <span class="coffer-tag tag-sonhos">Sonhos (Grande Brinquedo)</span>
+        </div>
+        <div class="coffer-balance-row">
+          <div class="coffer-svg-badge" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="6" width="18" height="13" rx="3" fill="#d97706" />
+              <circle cx="12" cy="12.5" r="2.6" fill="#fef3c7" />
+              <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6" stroke="#d97706" stroke-width="2" />
+            </svg>
+          </div>
+          <div class="coffer-balance" id="bal-sonhos">0,00 €</div>
+        </div>
         <div class="coffer-rule" id="rule-sonhos">Mesada: 30% • Presente: 30%</div>
       </div>
 
@@ -892,8 +1045,19 @@
 
     <div class="coffer-card">
       <div>
-        <span class="coffer-tag tag-liberdade">Liberdade (Pequeno Brinquedo)</span>
-        <div class="coffer-balance" id="bal-liberdade">0,00 €</div>
+        <div class="coffer-top-row">
+          <span class="coffer-tag tag-liberdade">Liberdade (Pequeno Brinquedo)</span>
+        </div>
+        <div class="coffer-balance-row">
+          <div class="coffer-svg-badge" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="6" width="18" height="13" rx="3" fill="#16a34a" />
+              <circle cx="12" cy="12.5" r="2.6" fill="#dcfce7" />
+              <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6" stroke="#16a34a" stroke-width="2" />
+            </svg>
+          </div>
+          <div class="coffer-balance" id="bal-liberdade">0,00 €</div>
+        </div>
         <div class="coffer-rule" id="rule-liberdade">Mesada: 20% • Presente: 10%</div>
       </div>
 
@@ -903,8 +1067,19 @@
 
     <div class="coffer-card">
       <div>
-        <span class="coffer-tag tag-doacao">Solidariedade</span>
-        <div class="coffer-balance" id="bal-doacao">0,00 €</div>
+        <div class="coffer-top-row">
+          <span class="coffer-tag tag-doacao">Solidariedade</span>
+        </div>
+        <div class="coffer-balance-row">
+          <div class="coffer-svg-badge" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <rect x="3" y="6" width="18" height="13" rx="3" fill="#db2777" />
+              <circle cx="12" cy="12.5" r="2.6" fill="#fce7f3" />
+              <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6" stroke="#db2777" stroke-width="2" />
+            </svg>
+          </div>
+          <div class="coffer-balance" id="bal-doacao">0,00 €</div>
+        </div>
         <div class="coffer-rule" id="rule-doacao">Mesada: 10% • Presente: 10%</div>
       </div>
     </div>
@@ -983,6 +1158,25 @@
     const POINTS_PER_BONUS = 10;
     const BONUS_AMOUNT = 5;
 
+    const MEDAL_CONFIG = {
+      liberdade: {
+        label: "Liberdade",
+        tiers: [
+          { key: "bronze", name: "Bronze", days: 15, reward: 1 },
+          { key: "silver", name: "Prata", days: 30, reward: 2 },
+          { key: "gold", name: "Ouro", days: 60, reward: 5 }
+        ]
+      },
+      sonhos: {
+        label: "Sonhos",
+        tiers: [
+          { key: "bronze", name: "Bronze", days: 30, reward: 1 },
+          { key: "silver", name: "Prata", days: 60, reward: 2 },
+          { key: "gold", name: "Ouro", days: 120, reward: 5 }
+        ]
+      }
+    };
+
     const COFFER_META = {
       poupar: {
         name: "O Meu Futuro",
@@ -1022,10 +1216,13 @@
         sonhos: { title: "", target: 0 },
         liberdade: { title: "", target: 0 }
       },
-      // Data a partir da qual conta o tempo sem retirar (reinicia a 0 quando retira)
       streakStart: {
         sonhos: new Date().toISOString(),
         liberdade: new Date().toISOString()
+      },
+      claimedMedals: {
+        sonhos: { bronze: false, silver: false, gold: false },
+        liberdade: { bronze: false, silver: false, gold: false }
       },
       charityPoints: 0,
       history: []
@@ -1051,7 +1248,11 @@
             sonhos: parsed.streakStart?.sonhos || new Date().toISOString(),
             liberdade: parsed.streakStart?.liberdade || new Date().toISOString()
           },
-          charityPoints: Number(parsed.charityPoints || 0),
+          claimedMedals: {
+            sonhos: { ...DEFAULT_STATE.claimedMedals.sonhos, ...(parsed.claimedMedals?.sonhos || {}) },
+            liberdade: { ...DEFAULT_STATE.claimedMedals.liberdade, ...(parsed.claimedMedals?.liberdade || {}) }
+          },
+          charityPoints: Math.max(0, Number(parsed.charityPoints || 0)),
           history: Array.isArray(parsed.history) ? parsed.history : []
         };
       } catch {
@@ -1075,7 +1276,7 @@
     }
 
     function fmtPts(val) {
-      const n = Number(val || 0);
+      const n = Math.max(0, Number(val || 0));
       return Number.isInteger(n) ? String(n) : n.toLocaleString("pt-PT", {
         minimumFractionDigits: 1,
         maximumFractionDigits: 2
@@ -1139,6 +1340,78 @@
       return result;
     }
 
+    // Distribui prémio de medalha: 50% Liberdade e 50% O Meu Futuro
+    function awardMedalReward(cofferKey, tierObj, nowObj, monthKey, nowStr) {
+      const half = Number((tierObj.reward / 2).toFixed(2));
+      const otherHalf = Number((tierObj.reward - half).toFixed(2));
+      const parts = {
+        poupar: otherHalf,
+        sonhos: 0,
+        liberdade: half,
+        doacao: 0
+      };
+
+      state.balances.poupar = Number((state.balances.poupar + parts.poupar).toFixed(2));
+      state.balances.liberdade = Number((state.balances.liberdade + parts.liberdade).toFixed(2));
+
+      state.history.unshift({
+        title: `Medalha ${tierObj.name} (${MEDAL_CONFIG[cofferKey].label}) → +${fmtEUR(parts.liberdade)} Liberdade & +${fmtEUR(parts.poupar)} Futuro`,
+        date: nowStr,
+        monthKey,
+        delta: tierObj.reward,
+        parts
+      });
+    }
+
+    // Avalia medalhas atingidas e trata reinício do ciclo ao atingir Ouro
+    function evaluateMedalRewards() {
+      let changed = false;
+      const messages = [];
+      const nowObj = new Date();
+      const nowStr = nowObj.toLocaleString("pt-PT", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+      const monthKey = getCurrentMonthKey(nowObj);
+
+      GOAL_COFFERS.forEach((key) => {
+        const config = MEDAL_CONFIG[key];
+        const days = getDaysWithoutWithdraw(key);
+        const claimed = state.claimedMedals[key] || { bronze: false, silver: false, gold: false };
+
+        for (const tier of config.tiers) {
+          if (days >= tier.days && !claimed[tier.key]) {
+            claimed[tier.key] = true;
+            state.claimedMedals[key] = claimed;
+            awardMedalReward(key, tier, nowObj, monthKey, nowStr);
+            messages.push(
+              `Medalha de ${tier.name} em ${config.label} (${tier.days}d): ganhaste ${fmtEUR(tier.reward)} (${fmtEUR(tier.reward / 2)} Liberdade + ${fmtEUR(tier.reward / 2)} Futuro)!`
+            );
+            changed = true;
+          }
+        }
+
+        // Ao atingir a medalha de Ouro, começa a contagem de novo para o próximo ciclo
+        if (claimed.gold) {
+          state.streakStart[key] = new Date().toISOString();
+          state.claimedMedals[key] = { bronze: false, silver: false, gold: false };
+          selectedMonthKey = monthKey;
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        saveState();
+        if (messages.length) {
+          showFeedbackBanner(messages.join(" "), "info");
+        }
+      }
+      return changed;
+    }
+
     function getDaysWithoutWithdraw(cofferKey) {
       const startIso = state.streakStart?.[cofferKey];
       const startMs = startIso ? new Date(startIso).getTime() : Date.now();
@@ -1147,33 +1420,50 @@
       return Math.floor(diffMs / (1000 * 60 * 60 * 24));
     }
 
-    function getMedalInfo(days) {
-      let tier = "none";
-      let tierLabel = "Sem medalha ainda";
-      let nextLabel = `Faltam ${Math.max(0, 15 - days)} dias para Bronze (15d)`;
-      let daysToNext = Math.max(0, 15 - days);
+    function getMedalStatus(cofferKey) {
+      const config = MEDAL_CONFIG[cofferKey];
+      const days = getDaysWithoutWithdraw(cofferKey);
+      const claimed = state.claimedMedals[cofferKey] || { bronze: false, silver: false, gold: false };
 
-      if (days >= 60) {
-        tier = "gold";
-        tierLabel = "Medalha de Ouro";
-        nextLabel = "Máximo atingido (60+ dias sem mexer!)";
-        daysToNext = 0;
-      } else if (days >= 30) {
-        tier = "silver";
-        tierLabel = "Medalha de Prata";
-        nextLabel = `Faltam ${60 - days} dias para Ouro (60d)`;
-        daysToNext = 60 - days;
-      } else if (days >= 15) {
-        tier = "bronze";
-        tierLabel = "Medalha de Bronze";
-        nextLabel = `Faltam ${30 - days} dias para Prata (30d)`;
-        daysToNext = 30 - days;
-      }
+      let currentTierLabel = "Sem medalha ainda";
+      if (claimed.gold) currentTierLabel = "Medalha de Ouro";
+      else if (claimed.silver || days >= config.tiers[1].days) currentTierLabel = "Medalha de Prata";
+      else if (claimed.bronze || days >= config.tiers[0].days) currentTierLabel = "Medalha de Bronze";
 
-      return { tier, tierLabel, nextLabel, daysToNext };
+      const nextTier = config.tiers.find((t) => days < t.days) || config.tiers[config.tiers.length - 1];
+      const daysToNext = Math.max(0, nextTier.days - days);
+      const nextLabel = daysToNext > 0
+        ? `Faltam ${daysToNext}d para ${nextTier.name} (${nextTier.days}d • +${fmtEUR(nextTier.reward)})`
+        : "Ciclo concluído";
+
+      return { days, currentTierLabel, nextLabel, daysToNext, nextTier, claimed };
+    }
+
+    function renderMedalRewardsBar() {
+      const container = document.getElementById("medalRewardsSummary");
+      container.innerHTML = GOAL_COFFERS.map((key) => {
+        const config = MEDAL_CONFIG[key];
+        const status = getMedalStatus(key);
+        const pillsHtml = config.tiers
+          .map((t) => {
+            const isEarned = status.days >= t.days || status.claimed[t.key];
+            return `<span class="tier-pill ${isEarned ? "earned" : ""}">${t.name} ${t.days}d (+${t.reward}€)</span>`;
+          })
+          .join("");
+
+        return `
+          <div class="medal-coffer-reward">
+            <div class="medal-coffer-name">${config.label} • ${status.days}d seguidos</div>
+            <div class="medal-tiers-strip">${pillsHtml}</div>
+            <div class="reward-caption">${status.nextLabel}</div>
+          </div>
+        `;
+      }).join("");
     }
 
     function renderTopRewards() {
+      renderMedalRewardsBar();
+
       // 1. 5 estrelas para O Meu Futuro (50, 100, 150, 200, 250 €)
       const futureBal = Number(state.balances.poupar || 0);
       let earnedStars = 0;
@@ -1209,7 +1499,7 @@
       }
 
       // 2. Barra de pontos de Solidariedade (1€ = 1 ponto; cada 10 pontos = bónus 5€)
-      const pts = Number(state.charityPoints || 0);
+      const pts = Math.max(0, Number(state.charityPoints || 0));
       const availableBonuses = Math.floor(pts / POINTS_PER_BONUS);
       const progressPts = pts - availableBonuses * POINTS_PER_BONUS;
       const pctBar = Math.min(100, Math.max(0, (progressPts / POINTS_PER_BONUS) * 100));
@@ -1233,6 +1523,7 @@
     function renderCofferExtras() {
       GOAL_COFFERS.forEach((key) => {
         const meta = COFFER_META[key];
+        const config = MEDAL_CONFIG[key];
         const balance = Number(state.balances[key] || 0);
         const goal = state.goals[key] || { title: "", target: 0 };
         const hasTarget = Number(goal.target) > 0;
@@ -1273,17 +1564,17 @@
           </div>
         `;
 
-        const days = getDaysWithoutWithdraw(key);
-        const medal = getMedalInfo(days);
+        const status = getMedalStatus(key);
+        const [bTier, sTier, gTier] = config.tiers;
         const medalBox = document.getElementById(`medal-box-${key}`);
         medalBox.innerHTML = `
           <div class="medal-badges">
-            <span class="medal-chip bronze ${days >= 15 ? "unlocked" : ""}">🥉 15d Bronze</span>
-            <span class="medal-chip silver ${days >= 30 ? "unlocked" : ""}">🥈 30d Prata</span>
-            <span class="medal-chip gold ${days >= 60 ? "unlocked" : ""}">🥇 60d Ouro</span>
+            <span class="medal-chip bronze ${status.days >= bTier.days || status.claimed.bronze ? "unlocked" : ""}">🥉 ${bTier.days}d Bronze</span>
+            <span class="medal-chip silver ${status.days >= sTier.days || status.claimed.silver ? "unlocked" : ""}">🥈 ${sTier.days}d Prata</span>
+            <span class="medal-chip gold ${status.days >= gTier.days || status.claimed.gold ? "unlocked" : ""}">🥇 ${gTier.days}d Ouro</span>
           </div>
           <div class="medal-timer">
-            <strong>${days} ${days === 1 ? "dia" : "dias"}</strong> sem retirar • ${medal.nextLabel}
+            <strong>${status.days} ${status.days === 1 ? "dia" : "dias"}</strong> sem retirar • ${status.nextLabel}
           </div>
         `;
       });
@@ -1528,6 +1819,73 @@
       el.className = `feedback-banner ${type}`;
     }
 
+    // Retificar pontos da Solidariedade manualmente
+    document.getElementById("removeOnePointBtn").addEventListener("click", () => {
+      const current = Number(state.charityPoints || 0);
+      if (current <= 0) return;
+      state.charityPoints = Math.max(0, Number((current - 1).toFixed(2)));
+      saveState();
+      renderTopRewards();
+    });
+
+    document.getElementById("setPointsBtn").addEventListener("click", () => {
+      const current = Number(state.charityPoints || 0);
+      const raw = prompt("Indica o novo total de pontos de Solidariedade:", String(current));
+      if (raw === null) return;
+      const parsed = parseFloat(raw.replace(",", "."));
+      if (!Number.isFinite(parsed) || parsed < 0) {
+        alert("Indica um número válido igual ou maior que 0.");
+        return;
+      }
+      state.charityPoints = Number(parsed.toFixed(2));
+      saveState();
+      renderTopRewards();
+    });
+
+    // Exportar e importar backup em JSON para outro telemóvel
+    document.getElementById("exportDataBtn").addEventListener("click", () => {
+      const dataStr = JSON.stringify(state, null, 2);
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const today = new Date().toISOString().slice(0, 10);
+      a.href = url;
+      a.download = `cofre-magico-backup-${today}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("importDataBtn").addEventListener("click", () => {
+      document.getElementById("importFileInput").click();
+    });
+
+    document.getElementById("importFileInput").addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(String(reader.result || "{}"));
+          if (!imported || typeof imported !== "object" || !imported.balances) {
+            alert("Ficheiro inválido.");
+            return;
+          }
+          if (!confirm("Substituir os dados atuais pelos dados deste ficheiro?")) return;
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(imported));
+          state = loadState();
+          selectedMonthKey = "";
+          renderAll();
+          showFeedbackBanner("Dados importados com sucesso!", "info");
+        } catch {
+          alert("Não foi possível ler o ficheiro selecionado.");
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = "";
+    });
+
     // Guardar ou abrir editor de objetivo em Sonhos e Liberdade
     document.querySelector(".coffers-grid").addEventListener("click", (e) => {
       const editBtn = e.target.closest("[data-goal-edit]");
@@ -1555,7 +1913,7 @@
       }
     });
 
-    // Receber bónus de 5€ quando atinge 10 pontos de solidariedade (distribui como mesada)
+    // Receber bónus de 5€ quando atinge 10 pontos de solidariedade
     document.getElementById("claimBonusBtn").addEventListener("click", () => {
       const pts = Number(state.charityPoints || 0);
       if (pts < POINTS_PER_BONUS) return;
@@ -1711,17 +2069,15 @@
         return;
       }
 
-      // Aviso consciente ao retirar de Liberdade ou Sonhos + aviso de medalha
       if (GOAL_COFFERS.includes(coffer)) {
-        const days = getDaysWithoutWithdraw(coffer);
-        const medal = getMedalInfo(days);
+        const status = getMedalStatus(coffer);
+        const config = MEDAL_CONFIG[coffer];
 
         let medalWarning = "";
-        if (medal.daysToNext > 0) {
-          const nextRewardName = days < 15 ? "Bronze (15 dias)" : days < 30 ? "Prata (30 dias)" : "Ouro (60 dias)";
-          medalWarning = `\n\nAtenção: faltam ${medal.daysToNext} dias para atingir a medalha de ${nextRewardName}. Se retirares agora, a contagem volta ao zero — tens a certeza de que queres perder essa recompensa?`;
-        } else if (medal.tier !== "none") {
-          medalWarning = `\n\nAtenção: se retirares agora, a contagem de dias sem mexer volta ao zero.${medal.tier === "gold" ? "" : " Tens a certeza de que queres recomeçar a contagem?"}`;
+        if (status.daysToNext > 0) {
+          medalWarning = `\n\nAtenção: faltam ${status.daysToNext} dias para atingir a medalha de ${status.nextTier.name} (${status.nextTier.days} dias • +${fmtEUR(status.nextTier.reward)}). Se retirares agora, a contagem volta ao zero — tens a certeza de que queres perder essa recompensa?`;
+        } else {
+          medalWarning = `\n\nAtenção: se retirares agora em ${config.label}, a contagem de dias sem mexer volta ao zero. Tens a certeza?`;
         }
 
         const confirmed = confirm(
@@ -1735,12 +2091,11 @@
 
       state.balances[coffer] = Number((state.balances[coffer] - amount).toFixed(2));
 
-      // Se retirou de Sonhos ou Liberdade, a contagem de dias sem mexer começa do zero
       if (GOAL_COFFERS.includes(coffer)) {
         state.streakStart[coffer] = new Date().toISOString();
+        state.claimedMedals[coffer] = { bronze: false, silver: false, gold: false };
       }
 
-      // Se retirou de Solidariedade, ganha 1 ponto por cada 1 € doado
       let pointsEarned = 0;
       if (coffer === "doacao") {
         pointsEarned = Number(amount.toFixed(2));
@@ -1835,7 +2190,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         const swCode = `
-          const CACHE_NAME = "cofre-magico-v5";
+          const CACHE_NAME = "cofre-magico-v6";
           self.addEventListener("install", (e) => {
             e.waitUntil(
               caches.open(CACHE_NAME).then((cache) => cache.addAll(["./", "./index.html"]))
@@ -1861,6 +2216,7 @@
       });
     }
 
+    evaluateMedalRewards();
     renderAll();
   </script>
 </body>
