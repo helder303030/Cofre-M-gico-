@@ -327,6 +327,59 @@
       background: #facc15;
     }
 
+    .choice-picker-box {
+      margin-top: 8px;
+      padding: 10px;
+      background: rgba(15, 23, 42, 0.36);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .choice-picker-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .btn-choice-liberdade {
+      background: #22c55e;
+      color: #052e16;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 8px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-choice-sonhos {
+      background: #f59e0b;
+      color: #271502;
+      border: none;
+      border-radius: 8px;
+      padding: 7px 8px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-choice-cancel {
+      margin-top: 6px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      padding: 5px 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     .btn-config {
       background: rgba(255, 255, 255, 0.22);
       color: #fff;
@@ -1230,8 +1283,9 @@
 
     <div class="top-stack">
       <div class="reward-panel">
-        <div class="reward-panel-title">Percurso das Medalhas • Prémios (50% Liberdade • 50% Futuro)</div>
+        <div class="reward-panel-title">Percurso das Medalhas • Prémios (50% Futuro • 50% Brinquedos à escolha)</div>
         <div class="medal-rewards-grid" id="medalRewardsSummary"></div>
+        <div id="medalChoiceContainer"></div>
       </div>
 
       <div class="top-rewards-grid">
@@ -1259,8 +1313,9 @@
             </div>
           </div>
           <button type="button" class="btn-bonus" id="claimBonusBtn" style="display: none;">
-            Receber bónus de 5,00 € (distribuir agora)
+            Receber bónus de 5,00 € (2,50 € Futuro + 2,50 € Brinquedos)
           </button>
+          <div id="bonusChoiceContainer"></div>
         </div>
       </div>
     </div>
@@ -1606,6 +1661,7 @@
         sonhos: { bronze: false, silver: false, gold: false },
         liberdade: { bronze: false, silver: false, gold: false }
       },
+      pendingMedalChoices: [],
       charityPoints: 0,
       history: []
     };
@@ -1634,6 +1690,7 @@
             sonhos: { ...DEFAULT_STATE.claimedMedals.sonhos, ...(parsed.claimedMedals?.sonhos || {}) },
             liberdade: { ...DEFAULT_STATE.claimedMedals.liberdade, ...(parsed.claimedMedals?.liberdade || {}) }
           },
+          pendingMedalChoices: Array.isArray(parsed.pendingMedalChoices) ? parsed.pendingMedalChoices : [],
           charityPoints: Math.max(0, Number(parsed.charityPoints || 0)),
           history: Array.isArray(parsed.history) ? parsed.history : []
         };
@@ -1646,6 +1703,7 @@
     let selectedMonthKey = "";
     let pendingUndoIdx = null;
     let pendingDeleteIdx = null;
+    let bonusChoiceOpen = false;
     let activeCofferDrawer = { coffer: null, mode: null, msg: "" };
     let historyCollapsed = false;
     const openGoalEditors = { sonhos: false, liberdade: false };
@@ -1726,31 +1784,47 @@
       return result;
     }
 
-    function awardMedalReward(cofferKey, tierObj, nowObj, monthKey, nowStr) {
-      const half = Number((tierObj.reward / 2).toFixed(2));
-      const otherHalf = Number((tierObj.reward - half).toFixed(2));
-      const parts = {
-        poupar: otherHalf,
-        sonhos: 0,
-        liberdade: half,
-        doacao: 0
+    // Divide um valor total em 50% Futuro e 50% num cofre de brinquedos escolhido ("liberdade" ou "sonhos")
+    function splitFutureAndToyChoice(totalAmount, toyCoffer) {
+      const cents = Math.round(Number(totalAmount || 0) * 100);
+      const futureCents = Math.floor(cents / 2);
+      const toyCents = cents - futureCents;
+
+      const futureEur = Number((futureCents / 100).toFixed(2));
+      const toyEur = Number((toyCents / 100).toFixed(2));
+      const targetToy = toyCoffer === "sonhos" ? "sonhos" : "liberdade";
+
+      return {
+        futureEur,
+        toyEur,
+        targetToy,
+        parts: {
+          poupar: futureEur,
+          sonhos: targetToy === "sonhos" ? toyEur : 0,
+          liberdade: targetToy === "liberdade" ? toyEur : 0,
+          doacao: 0
+        }
       };
+    }
 
-      state.balances.poupar = Number((state.balances.poupar + parts.poupar).toFixed(2));
-      state.balances.liberdade = Number((state.balances.liberdade + parts.liberdade).toFixed(2));
+    function applyMedalRewardWithChoice(cofferKey, tierObj, toyCoffer, nowObj, monthKey, nowStr) {
+      const split = splitFutureAndToyChoice(tierObj.reward, toyCoffer);
 
+      state.balances.poupar = Number((state.balances.poupar + split.futureEur).toFixed(2));
+      state.balances[split.targetToy] = Number((state.balances[split.targetToy] + split.toyEur).toFixed(2));
+
+      const toyLabel = split.targetToy === "sonhos" ? "Sonhos" : "Liberdade";
       state.history.unshift({
-        title: `Medalha ${tierObj.name} (${MEDAL_CONFIG[cofferKey].label}) → +${fmtEUR(parts.liberdade)} Liberdade & +${fmtEUR(parts.poupar)} Futuro`,
+        title: `Medalha ${tierObj.name} (${MEDAL_CONFIG[cofferKey].label}) → +${fmtEUR(split.futureEur)} Futuro & +${fmtEUR(split.toyEur)} ${toyLabel}`,
         date: nowStr,
         monthKey,
         delta: tierObj.reward,
-        parts
+        parts: split.parts
       });
     }
 
     function evaluateMedalRewards() {
       let changed = false;
-      const messages = [];
       const nowObj = new Date();
       const nowStr = nowObj.toLocaleString("pt-PT", {
         day: "2-digit",
@@ -1761,6 +1835,10 @@
       });
       const monthKey = getCurrentMonthKey(nowObj);
 
+      if (!Array.isArray(state.pendingMedalChoices)) {
+        state.pendingMedalChoices = [];
+      }
+
       GOAL_COFFERS.forEach((key) => {
         const config = MEDAL_CONFIG[key];
         const days = getDaysWithoutWithdraw(key);
@@ -1770,10 +1848,23 @@
           if (days >= tier.days && !claimed[tier.key]) {
             claimed[tier.key] = true;
             state.claimedMedals[key] = claimed;
-            awardMedalReward(key, tier, nowObj, monthKey, nowStr);
-            messages.push(
-              `Medalha de ${tier.name} em ${config.label} (${tier.days}d): ganhaste ${fmtEUR(tier.reward)} (${fmtEUR(tier.reward / 2)} Liberdade + ${fmtEUR(tier.reward / 2)} Futuro)!`
-            );
+
+            const half = Number((tier.reward / 2).toFixed(2));
+            const otherHalf = Number((tier.reward - half).toFixed(2));
+
+            // Aplica logo a metade do futuro e regista a escolha da metade dos brinquedos
+            state.balances.poupar = Number((state.balances.poupar + half).toFixed(2));
+            state.pendingMedalChoices.push({
+              id: `${key}-${tier.key}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+              cofferKey: key,
+              tierName: tier.name,
+              tierDays: tier.days,
+              totalReward: tier.reward,
+              futureEur: half,
+              toyEur: otherHalf,
+              date: nowStr,
+              monthKey
+            });
             changed = true;
           }
         }
@@ -1788,11 +1879,51 @@
 
       if (changed) {
         saveState();
-        if (messages.length) {
-          showFeedbackBanner(messages.join(" "), "info");
-        }
       }
       return changed;
+    }
+
+    function resolvePendingMedalChoice(choiceId, toyCoffer) {
+      const idx = state.pendingMedalChoices.findIndex((c) => c.id === choiceId);
+      if (idx === -1) return;
+
+      const pending = state.pendingMedalChoices[idx];
+      const targetToy = toyCoffer === "sonhos" ? "sonhos" : "liberdade";
+      const toyEur = Number(pending.toyEur || 0);
+      const futureEur = Number(pending.futureEur || 0);
+
+      state.balances[targetToy] = Number((state.balances[targetToy] + toyEur).toFixed(2));
+      selectedMonthKey = pending.monthKey || getCurrentMonthKey();
+
+      const toyLabel = targetToy === "sonhos" ? "Sonhos" : "Liberdade";
+      const medalLabel = MEDAL_CONFIG[pending.cofferKey]?.label || pending.cofferKey;
+
+      state.history.unshift({
+        title: `Medalha ${pending.tierName} (${medalLabel}) → +${fmtEUR(futureEur)} Futuro & +${fmtEUR(toyEur)} ${toyLabel}`,
+        date: pending.date || new Date().toLocaleString("pt-PT", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        }),
+        monthKey: selectedMonthKey,
+        delta: Number((futureEur + toyEur).toFixed(2)),
+        parts: {
+          poupar: futureEur,
+          sonhos: targetToy === "sonhos" ? toyEur : 0,
+          liberdade: targetToy === "liberdade" ? toyEur : 0,
+          doacao: 0
+        }
+      });
+
+      state.pendingMedalChoices.splice(idx, 1);
+      saveState();
+      renderAll();
+      showFeedbackBanner(
+        `Medalha ${pending.tierName}: ${fmtEUR(futureEur)} em O Meu Futuro e ${fmtEUR(toyEur)} em ${toyLabel}!`,
+        "info"
+      );
     }
 
     function getDaysWithoutWithdraw(cofferKey) {
@@ -1863,6 +1994,33 @@
           </div>
         `;
       }).join("");
+
+      const choiceContainer = document.getElementById("medalChoiceContainer");
+      const pendingList = Array.isArray(state.pendingMedalChoices) ? state.pendingMedalChoices : [];
+      if (!pendingList.length) {
+        choiceContainer.innerHTML = "";
+        return;
+      }
+
+      const currentPending = pendingList[0];
+      const medalSource = MEDAL_CONFIG[currentPending.cofferKey]?.label || currentPending.cofferKey;
+      choiceContainer.innerHTML = `
+        <div class="choice-picker-box">
+          <div>
+            <strong>Medalha ${escapeHtml(currentPending.tierName)} (${escapeHtml(medalSource)}):</strong>
+            ${fmtEUR(currentPending.futureEur)} já foram para <strong>O Meu Futuro</strong>. Onde queres colocar os restantes <strong>${fmtEUR(currentPending.toyEur)}</strong>?
+            ${pendingList.length > 1 ? ` (${pendingList.length} medalhas por escolher)` : ""}
+          </div>
+          <div class="choice-picker-btns">
+            <button type="button" class="btn-choice-liberdade" data-medal-choice-id="${escapeAttr(currentPending.id)}" data-toy="liberdade">
+              Liberdade (+${fmtEUR(currentPending.toyEur)})
+            </button>
+            <button type="button" class="btn-choice-sonhos" data-medal-choice-id="${escapeAttr(currentPending.id)}" data-toy="sonhos">
+              Sonhos (+${fmtEUR(currentPending.toyEur)})
+            </button>
+          </div>
+        </div>
+      `;
     }
 
     function renderTopRewards() {
@@ -1915,12 +2073,33 @@
 
       const charityCaption = document.getElementById("charityPointsCaption");
       const bonusBtn = document.getElementById("claimBonusBtn");
+      const bonusChoiceEl = document.getElementById("bonusChoiceContainer");
 
       if (availableBonuses > 0) {
         charityCaption.textContent = `${fmtPts(pts)} pts acumulados • Tens ${availableBonuses} bónus de ${fmtEUR(BONUS_AMOUNT)} pronto(s)!`;
         bonusBtn.style.display = "block";
-        bonusBtn.textContent = `Receber bónus de ${fmtEUR(BONUS_AMOUNT)} (${availableBonuses} disponível)`;
+        bonusBtn.textContent = `Receber bónus de ${fmtEUR(BONUS_AMOUNT)} (2,50 € Futuro + 2,50 € Brinquedos)`;
+
+        const halfBonus = Number((BONUS_AMOUNT / 2).toFixed(2));
+        if (bonusChoiceOpen) {
+          bonusChoiceEl.innerHTML = `
+            <div class="choice-picker-box">
+              <div>
+                <strong>${fmtEUR(halfBonus)}</strong> vão para <strong>O Meu Futuro</strong>. Queres colocar os outros <strong>${fmtEUR(halfBonus)}</strong> em:
+              </div>
+              <div class="choice-picker-btns">
+                <button type="button" class="btn-choice-liberdade" data-bonus-toy="liberdade">Liberdade (+${fmtEUR(halfBonus)})</button>
+                <button type="button" class="btn-choice-sonhos" data-bonus-toy="sonhos">Sonhos (+${fmtEUR(halfBonus)})</button>
+              </div>
+              <button type="button" class="btn-choice-cancel" id="cancelBonusChoiceBtn">Cancelar</button>
+            </div>
+          `;
+        } else {
+          bonusChoiceEl.innerHTML = "";
+        }
       } else {
+        bonusChoiceOpen = false;
+        bonusChoiceEl.innerHTML = "";
         charityCaption.textContent = `${fmtPts(progressPts)} / ${POINTS_PER_BONUS} pts • Faltam ${fmtPts(missingPts)} pts para ganhar ${fmtEUR(BONUS_AMOUNT)}`;
         bonusBtn.style.display = "none";
       }
@@ -2362,9 +2541,6 @@
 
       if (hasDetails) {
         if (delta < 0) {
-          // Movimento foi uma retirada/saída:
-          // option === "yes" -> o dinheiro volta para o cofre
-          // option === "no"  -> o dinheiro NÃO volta para o cofre e desaparece juntamente com o movimento
           if (option === "yes" && item.coffer && COFFER_KEYS.includes(item.coffer)) {
             state.balances[item.coffer] = Number(
               (Number(state.balances[item.coffer] || 0) + Math.abs(delta)).toFixed(2)
@@ -2380,9 +2556,6 @@
             }
           }
         } else {
-          // Movimento foi uma entrada:
-          // option === "yes" -> mantém o valor no respetivo cofre
-          // option === "no"  -> retira o valor do respetivo cofre ao apagar
           if (option === "no") {
             if (item.parts) {
               COFFER_KEYS.forEach((k) => {
@@ -2523,6 +2696,7 @@
           selectedMonthKey = "";
           pendingUndoIdx = null;
           pendingDeleteIdx = null;
+          bonusChoiceOpen = false;
           activeCofferDrawer = { coffer: null, mode: null, msg: "" };
           renderAll();
           showFeedbackBanner("Dados importados com sucesso!", "info");
@@ -2686,16 +2860,41 @@
       }
     });
 
+    document.getElementById("medalChoiceContainer").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-medal-choice-id]");
+      if (!btn) return;
+      const choiceId = btn.dataset.medalChoiceId;
+      const toyCoffer = btn.dataset.toy;
+      resolvePendingMedalChoice(choiceId, toyCoffer);
+    });
+
     document.getElementById("claimBonusBtn").addEventListener("click", () => {
       const pts = Number(state.charityPoints || 0);
       if (pts < POINTS_PER_BONUS) return;
+      bonusChoiceOpen = !bonusChoiceOpen;
+      renderTopRewards();
+    });
 
-      const parts = splitAmount(BONUS_AMOUNT, state.rules.mesada);
+    document.getElementById("bonusChoiceContainer").addEventListener("click", (e) => {
+      if (e.target.closest("#cancelBonusChoiceBtn")) {
+        bonusChoiceOpen = false;
+        renderTopRewards();
+        return;
+      }
+
+      const toyBtn = e.target.closest("[data-bonus-toy]");
+      if (!toyBtn) return;
+
+      const pts = Number(state.charityPoints || 0);
+      if (pts < POINTS_PER_BONUS) return;
+
+      const split = splitFutureAndToyChoice(BONUS_AMOUNT, toyBtn.dataset.bonusToy);
       COFFER_KEYS.forEach((k) => {
-        state.balances[k] = Number((state.balances[k] + parts[k]).toFixed(2));
+        state.balances[k] = Number((state.balances[k] + split.parts[k]).toFixed(2));
       });
 
       state.charityPoints = Number((pts - POINTS_PER_BONUS).toFixed(2));
+      bonusChoiceOpen = false;
 
       const nowObj = new Date();
       const now = nowObj.toLocaleString("pt-PT", {
@@ -2708,18 +2907,19 @@
       const monthKey = getCurrentMonthKey(nowObj);
       selectedMonthKey = monthKey;
 
+      const toyLabel = split.targetToy === "sonhos" ? "Sonhos" : "Liberdade";
       state.history.unshift({
-        title: "Bónus Solidariedade (10 pts → 5,00 € distribuídos)",
+        title: `Bónus Solidariedade (10 pts → ${fmtEUR(split.futureEur)} Futuro & ${fmtEUR(split.toyEur)} ${toyLabel})`,
         date: now,
         monthKey,
         delta: BONUS_AMOUNT,
-        parts
+        parts: split.parts
       });
 
       saveState();
       renderAll();
       showFeedbackBanner(
-        `Recebeste ${fmtEUR(BONUS_AMOUNT)} de bónus pela tua solidariedade e foram divididos pelos 4 cofres!`,
+        `Recebeste ${fmtEUR(BONUS_AMOUNT)} de bónus: ${fmtEUR(split.futureEur)} em O Meu Futuro e ${fmtEUR(split.toyEur)} em ${toyLabel}!`,
         "info"
       );
     });
@@ -2986,6 +3186,7 @@
       };
       pendingUndoIdx = null;
       pendingDeleteIdx = null;
+      bonusChoiceOpen = false;
       activeCofferDrawer = { coffer: null, mode: null, msg: "" };
       saveState();
       renderAll();
