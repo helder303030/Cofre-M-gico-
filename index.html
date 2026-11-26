@@ -551,19 +551,40 @@
       background: var(--card);
       border: 1.5px solid #cbd5e1;
       border-radius: 16px;
-      padding: 16px;
+      padding: 14px 16px 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
     }
 
-    .coffer-top-row {
+    .coffer-header-bar {
       display: flex;
-      justify-content: center;
       align-items: center;
+      gap: 8px;
       margin-bottom: 12px;
       width: 100%;
+    }
+
+    .btn-empty-coffer {
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      border: 1px solid #fecaca;
+      background: #fef2f2;
+      color: #b91c1c;
+      font-size: 0.85rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s ease;
+    }
+
+    .btn-empty-coffer:hover {
+      background: #fee2e2;
     }
 
     .coffer-tag {
@@ -574,14 +595,13 @@
       border-radius: 999px;
     }
 
-    .coffer-card .coffer-tag {
-      display: block;
-      width: 100%;
+    .coffer-header-bar .coffer-tag {
+      flex: 1;
       text-align: center;
-      font-size: 0.96rem;
+      font-size: 0.92rem;
       font-weight: 800;
-      padding: 8px 12px;
-      border-radius: 12px;
+      padding: 7px 10px;
+      border-radius: 11px;
     }
 
     .tag-poupar { background: var(--poupar-bg); color: var(--poupar-fg); }
@@ -592,13 +612,21 @@
     .coffer-balance-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      gap: 8px;
       margin-bottom: 4px;
     }
 
+    .coffer-balance-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
     .coffer-svg-badge {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -609,13 +637,114 @@
     }
 
     .coffer-balance {
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       font-weight: 800;
+    }
+
+    .btn-add-coffer {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      border: 1px solid #bbf7d0;
+      background: #f0fdf4;
+      color: #15803d;
+      font-size: 1.15rem;
+      font-weight: 800;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.15s ease;
+    }
+
+    .btn-add-coffer:hover {
+      background: #dcfce7;
     }
 
     .coffer-rule {
       font-size: 0.8rem;
       color: var(--muted);
+    }
+
+    .coffer-action-drawer {
+      display: none;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      line-height: 1.35;
+    }
+
+    .coffer-action-drawer.open {
+      display: block;
+    }
+
+    .coffer-action-drawer.empty-drawer {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    .coffer-action-drawer.add-drawer {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: var(--text);
+    }
+
+    .coffer-action-drawer input {
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      margin-top: 6px;
+      margin-bottom: 8px;
+    }
+
+    .coffer-drawer-btns {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-drawer-danger {
+      background: #dc2626;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-drawer-add {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-drawer-cancel {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .coffer-inline-msg {
+      margin-top: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #b91c1c;
     }
 
     .goal-box {
@@ -908,6 +1037,38 @@
       display: inline-block;
     }
 
+    .history-toggle-btn {
+      width: 100%;
+      background: none;
+      border: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      text-align: left;
+      color: var(--text);
+    }
+
+    .history-toggle-btn h2 {
+      margin-bottom: 0;
+    }
+
+    .history-arrow {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+    }
+
+    .history-body {
+      margin-top: 12px;
+    }
+
+    .history-body.collapsed {
+      display: none;
+    }
+
     .history-entry {
       border-bottom: 1px solid var(--border);
       padding: 10px 0;
@@ -1196,85 +1357,105 @@
     </div>
 
     <div class="coffers-grid">
-      <div class="coffer-card">
+      <div class="coffer-card" id="coffer-card-poupar">
         <div>
-          <div class="coffer-top-row">
+          <div class="coffer-header-bar">
+            <button type="button" class="btn-empty-coffer" data-empty-toggle="poupar" title="Esvaziar cofre">⤬</button>
             <span class="coffer-tag tag-poupar">O Meu Futuro</span>
           </div>
           <div class="coffer-balance-row">
-            <div class="coffer-svg-badge" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="6" width="18" height="13" rx="3" fill="#4f46e5" />
-                <circle cx="12" cy="12.5" r="2.6" fill="#fde047" />
-                <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6" stroke="#4f46e5" stroke-width="2" />
-              </svg>
+            <div class="coffer-balance-left">
+              <div class="coffer-svg-badge" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="6" width="18" height="13" rx="3" fill="#4f46e5" />
+                  <circle cx="12" cy="12.5" r="2.6" fill="#fde047" />
+                  <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6" stroke="#4f46e5" stroke-width="2" />
+                </svg>
+              </div>
+              <div class="coffer-balance" id="bal-poupar">0,00 €</div>
             </div>
-            <div class="coffer-balance" id="bal-poupar">0,00 €</div>
+            <button type="button" class="btn-add-coffer" data-add-toggle="poupar" title="Adicionar fundos">+</button>
           </div>
           <div class="coffer-rule" id="rule-poupar">Mesada: 40% • Presente: 50%</div>
+          <div id="coffer-drawer-poupar"></div>
         </div>
       </div>
 
-      <div class="coffer-card">
+      <div class="coffer-card" id="coffer-card-sonhos">
         <div>
-          <div class="coffer-top-row">
+          <div class="coffer-header-bar">
+            <button type="button" class="btn-empty-coffer" data-empty-toggle="sonhos" title="Esvaziar cofre">⤬</button>
             <span class="coffer-tag tag-sonhos">Sonhos (Grande Brinquedo)</span>
           </div>
           <div class="coffer-balance-row">
-            <div class="coffer-svg-badge" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="6" width="18" height="13" rx="3" fill="#d97706" />
-                <circle cx="12" cy="12.5" r="2.6" fill="#fef3c7" />
-                <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6" stroke="#d97706" stroke-width="2" />
-              </svg>
+            <div class="coffer-balance-left">
+              <div class="coffer-svg-badge" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="6" width="18" height="13" rx="3" fill="#d97706" />
+                  <circle cx="12" cy="12.5" r="2.6" fill="#fef3c7" />
+                  <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6" stroke="#d97706" stroke-width="2" />
+                </svg>
+              </div>
+              <div class="coffer-balance" id="bal-sonhos">0,00 €</div>
             </div>
-            <div class="coffer-balance" id="bal-sonhos">0,00 €</div>
+            <button type="button" class="btn-add-coffer" data-add-toggle="sonhos" title="Adicionar fundos">+</button>
           </div>
           <div class="coffer-rule" id="rule-sonhos">Mesada: 30% • Presente: 30%</div>
+          <div id="coffer-drawer-sonhos"></div>
         </div>
 
         <div class="goal-box" id="goal-box-sonhos"></div>
         <div class="medal-box" id="medal-box-sonhos"></div>
       </div>
 
-      <div class="coffer-card">
+      <div class="coffer-card" id="coffer-card-liberdade">
         <div>
-          <div class="coffer-top-row">
+          <div class="coffer-header-bar">
+            <button type="button" class="btn-empty-coffer" data-empty-toggle="liberdade" title="Esvaziar cofre">⤬</button>
             <span class="coffer-tag tag-liberdade">Liberdade (Pequeno Brinquedo)</span>
           </div>
           <div class="coffer-balance-row">
-            <div class="coffer-svg-badge" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="6" width="18" height="13" rx="3" fill="#16a34a" />
-                <circle cx="12" cy="12.5" r="2.6" fill="#dcfce7" />
-                <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6" stroke="#16a34a" stroke-width="2" />
-              </svg>
+            <div class="coffer-balance-left">
+              <div class="coffer-svg-badge" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="6" width="18" height="13" rx="3" fill="#16a34a" />
+                  <circle cx="12" cy="12.5" r="2.6" fill="#dcfce7" />
+                  <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6" stroke="#16a34a" stroke-width="2" />
+                </svg>
+              </div>
+              <div class="coffer-balance" id="bal-liberdade">0,00 €</div>
             </div>
-            <div class="coffer-balance" id="bal-liberdade">0,00 €</div>
+            <button type="button" class="btn-add-coffer" data-add-toggle="liberdade" title="Adicionar fundos">+</button>
           </div>
           <div class="coffer-rule" id="rule-liberdade">Mesada: 20% • Presente: 10%</div>
+          <div id="coffer-drawer-liberdade"></div>
         </div>
 
         <div class="goal-box" id="goal-box-liberdade"></div>
         <div class="medal-box" id="medal-box-liberdade"></div>
       </div>
 
-      <div class="coffer-card">
+      <div class="coffer-card" id="coffer-card-doacao">
         <div>
-          <div class="coffer-top-row">
+          <div class="coffer-header-bar">
+            <button type="button" class="btn-empty-coffer" data-empty-toggle="doacao" title="Esvaziar cofre">⤬</button>
             <span class="coffer-tag tag-doacao">Solidariedade</span>
           </div>
           <div class="coffer-balance-row">
-            <div class="coffer-svg-badge" aria-hidden="true">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <rect x="3" y="6" width="18" height="13" rx="3" fill="#db2777" />
-                <circle cx="12" cy="12.5" r="2.6" fill="#fce7f3" />
-                <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6" stroke="#db2777" stroke-width="2" />
-              </svg>
+            <div class="coffer-balance-left">
+              <div class="coffer-svg-badge" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="6" width="18" height="13" rx="3" fill="#db2777" />
+                  <circle cx="12" cy="12.5" r="2.6" fill="#fce7f3" />
+                  <path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h7A1.5 1.5 0 0 1 17 4.5V6" stroke="#db2777" stroke-width="2" />
+                </svg>
+              </div>
+              <div class="coffer-balance" id="bal-doacao">0,00 €</div>
             </div>
-            <div class="coffer-balance" id="bal-doacao">0,00 €</div>
+            <button type="button" class="btn-add-coffer" data-add-toggle="doacao" title="Adicionar fundos">+</button>
           </div>
           <div class="coffer-rule" id="rule-doacao">Mesada: 10% • Presente: 10%</div>
+          <div id="coffer-drawer-doacao"></div>
         </div>
       </div>
     </div>
@@ -1339,9 +1520,14 @@
   </div>
 
   <div class="card">
-    <h2>Últimos movimentos</h2>
-    <div id="historyList">
-      <div class="small-note">Ainda não existem movimentos registados.</div>
+    <button type="button" class="history-toggle-btn" id="toggleHistoryBtn" aria-expanded="true">
+      <h2>Últimos movimentos</h2>
+      <span class="history-arrow" id="historyArrow">▾</span>
+    </button>
+    <div class="history-body" id="historyBody">
+      <div id="historyList">
+        <div class="small-note">Ainda não existem movimentos registados.</div>
+      </div>
     </div>
   </div>
 
@@ -1458,6 +1644,8 @@
     let state = loadState();
     let selectedMonthKey = "";
     let pendingUndoIdx = null;
+    let activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+    let historyCollapsed = false;
     const openGoalEditors = { sonhos: false, liberdade: false };
 
     function saveState() {
@@ -1736,7 +1924,48 @@
       }
     }
 
+    function renderCofferDrawers() {
+      COFFER_KEYS.forEach((k) => {
+        const drawerEl = document.getElementById(`coffer-drawer-${k}`);
+        const isOpen = activeCofferDrawer.coffer === k && activeCofferDrawer.mode;
+        if (!isOpen) {
+          drawerEl.innerHTML = "";
+          return;
+        }
+
+        const cofferName = COFFER_META[k].name;
+        if (activeCofferDrawer.mode === "empty") {
+          drawerEl.innerHTML = `
+            <div class="coffer-action-drawer empty-drawer open">
+              <div>Tem a certeza que quer esvaziar o cofre? Se aceitar vai perder o valor total! (${fmtEUR(state.balances[k])})</div>
+              <div class="coffer-drawer-btns">
+                <button type="button" class="btn-drawer-danger" data-empty-confirm="${k}">Sim, esvaziar</button>
+                <button type="button" class="btn-drawer-cancel" data-drawer-cancel="${k}">Não</button>
+              </div>
+              ${activeCofferDrawer.msg ? `<div class="coffer-inline-msg">${escapeHtml(activeCofferDrawer.msg)}</div>` : ""}
+            </div>
+          `;
+        } else if (activeCofferDrawer.mode === "add") {
+          drawerEl.innerHTML = `
+            <div class="coffer-action-drawer add-drawer open">
+              <div><strong>Deseja adicionar fundos ao cofre ${escapeHtml(cofferName)}?</strong></div>
+              <input type="number" id="add-coffer-input-${k}" step="0.01" min="0" placeholder="Valor em € (ex: 5,00)" />
+              <div class="coffer-drawer-btns">
+                <button type="button" class="btn-drawer-add" data-add-confirm="${k}">Adicionar</button>
+                <button type="button" class="btn-drawer-cancel" data-drawer-cancel="${k}">Cancelar</button>
+              </div>
+              ${activeCofferDrawer.msg ? `<div class="coffer-inline-msg">${escapeHtml(activeCofferDrawer.msg)}</div>` : ""}
+            </div>
+          `;
+          const inp = document.getElementById(`add-coffer-input-${k}`);
+          if (inp) inp.focus();
+        }
+      });
+    }
+
     function renderCofferExtras() {
+      renderCofferDrawers();
+
       GOAL_COFFERS.forEach((key) => {
         const meta = COFFER_META[key];
         const config = MEDAL_CONFIG[key];
@@ -1840,9 +2069,15 @@
             statsByMonth[mKey].coffers[k].net = Number((statsByMonth[mKey].coffers[k].net + val).toFixed(2));
           });
         } else if (item.coffer && COFFER_KEYS.includes(item.coffer)) {
-          const val = Math.abs(Number(item.delta || 0));
-          statsByMonth[mKey].coffers[item.coffer].out = Number((statsByMonth[mKey].coffers[item.coffer].out + val).toFixed(2));
-          statsByMonth[mKey].coffers[item.coffer].net = Number((statsByMonth[mKey].coffers[item.coffer].net - val).toFixed(2));
+          const delta = Number(item.delta || 0);
+          if (delta >= 0) {
+            statsByMonth[mKey].coffers[item.coffer].in = Number((statsByMonth[mKey].coffers[item.coffer].in + delta).toFixed(2));
+            statsByMonth[mKey].coffers[item.coffer].net = Number((statsByMonth[mKey].coffers[item.coffer].net + delta).toFixed(2));
+          } else {
+            const absVal = Math.abs(delta);
+            statsByMonth[mKey].coffers[item.coffer].out = Number((statsByMonth[mKey].coffers[item.coffer].out + absVal).toFixed(2));
+            statsByMonth[mKey].coffers[item.coffer].net = Number((statsByMonth[mKey].coffers[item.coffer].net - absVal).toFixed(2));
+          }
         }
       });
 
@@ -1968,6 +2203,15 @@
       `;
     }
 
+    function renderHistoryCollapse() {
+      const body = document.getElementById("historyBody");
+      const arrow = document.getElementById("historyArrow");
+      const btn = document.getElementById("toggleHistoryBtn");
+      body.classList.toggle("collapsed", historyCollapsed);
+      arrow.textContent = historyCollapsed ? "▸" : "▾";
+      btn.setAttribute("aria-expanded", String(!historyCollapsed));
+    }
+
     function renderAll() {
       const total = COFFER_KEYS.reduce((acc, k) => acc + Number(state.balances[k] || 0), 0);
 
@@ -1991,6 +2235,7 @@
       renderPreview();
       renderMonthlySection();
       renderHistory();
+      renderHistoryCollapse();
     }
 
     function syncConfigInputs() {
@@ -2069,23 +2314,26 @@
       const item = state.history[idx];
       if (!item) return;
 
+      const delta = Number(item.delta || 0);
+
       if (item.parts) {
         COFFER_KEYS.forEach((k) => {
           state.balances[k] = Math.max(0, Number((state.balances[k] - (item.parts[k] || 0)).toFixed(2)));
         });
       } else if (item.coffer && COFFER_KEYS.includes(item.coffer)) {
-        const absDelta = Math.abs(Number(item.delta || 0));
-        state.balances[item.coffer] = Number((state.balances[item.coffer] + absDelta).toFixed(2));
-
-        if (item.coffer === "doacao" && item.pointsEarned) {
-          state.charityPoints = Math.max(0, Number((state.charityPoints - item.pointsEarned).toFixed(2)));
-        }
-
-        if (GOAL_COFFERS.includes(item.coffer) && item.previousStreakStart) {
-          state.streakStart[item.coffer] = item.previousStreakStart;
-          if (item.previousClaimedMedals) {
-            state.claimedMedals[item.coffer] = { ...item.previousClaimedMedals };
+        if (delta < 0) {
+          state.balances[item.coffer] = Number((state.balances[item.coffer] + Math.abs(delta)).toFixed(2));
+          if (item.coffer === "doacao" && item.pointsEarned) {
+            state.charityPoints = Math.max(0, Number((state.charityPoints - item.pointsEarned).toFixed(2)));
           }
+          if (GOAL_COFFERS.includes(item.coffer) && item.previousStreakStart) {
+            state.streakStart[item.coffer] = item.previousStreakStart;
+            if (item.previousClaimedMedals) {
+              state.claimedMedals[item.coffer] = { ...item.previousClaimedMedals };
+            }
+          }
+        } else if (delta > 0) {
+          state.balances[item.coffer] = Math.max(0, Number((state.balances[item.coffer] - delta).toFixed(2)));
         }
       }
 
@@ -2101,6 +2349,11 @@
       el.textContent = message;
       el.className = `feedback-banner ${type}`;
     }
+
+    document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
+      historyCollapsed = !historyCollapsed;
+      renderHistoryCollapse();
+    });
 
     document.getElementById("removeOnePointBtn").addEventListener("click", () => {
       const current = Number(state.charityPoints || 0);
@@ -2170,6 +2423,7 @@
           state = loadState();
           selectedMonthKey = "";
           pendingUndoIdx = null;
+          activeCofferDrawer = { coffer: null, mode: null, msg: "" };
           renderAll();
           showFeedbackBanner("Dados importados com sucesso!", "info");
         } catch {
@@ -2181,6 +2435,130 @@
     });
 
     document.querySelector(".coffers-grid").addEventListener("click", (e) => {
+      const emptyToggle = e.target.closest("[data-empty-toggle]");
+      if (emptyToggle) {
+        const k = emptyToggle.dataset.emptyToggle;
+        if (Number(state.balances[k] || 0) <= 0) {
+          activeCofferDrawer = { coffer: k, mode: "empty", msg: "Este cofre já está a 0,00 €." };
+        } else if (activeCofferDrawer.coffer === k && activeCofferDrawer.mode === "empty") {
+          activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+        } else {
+          activeCofferDrawer = { coffer: k, mode: "empty", msg: "" };
+        }
+        renderCofferDrawers();
+        return;
+      }
+
+      const addToggle = e.target.closest("[data-add-toggle]");
+      if (addToggle) {
+        const k = addToggle.dataset.addToggle;
+        if (activeCofferDrawer.coffer === k && activeCofferDrawer.mode === "add") {
+          activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+        } else {
+          activeCofferDrawer = { coffer: k, mode: "add", msg: "" };
+        }
+        renderCofferDrawers();
+        return;
+      }
+
+      const cancelDrawer = e.target.closest("[data-drawer-cancel]");
+      if (cancelDrawer) {
+        activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+        renderCofferDrawers();
+        return;
+      }
+
+      const emptyConfirm = e.target.closest("[data-empty-confirm]");
+      if (emptyConfirm) {
+        const k = emptyConfirm.dataset.emptyConfirm;
+        const currentBal = Number(state.balances[k] || 0);
+        if (currentBal <= 0) {
+          activeCofferDrawer = { coffer: k, mode: "empty", msg: "Este cofre já está vazio." };
+          renderCofferDrawers();
+          return;
+        }
+
+        const previousStreakStart = GOAL_COFFERS.includes(k) ? state.streakStart[k] : null;
+        const previousClaimedMedals = GOAL_COFFERS.includes(k)
+          ? { ...(state.claimedMedals[k] || { bronze: false, silver: false, gold: false }) }
+          : null;
+
+        state.balances[k] = 0;
+
+        if (GOAL_COFFERS.includes(k)) {
+          state.streakStart[k] = new Date().toISOString();
+          state.claimedMedals[k] = { bronze: false, silver: false, gold: false };
+        }
+
+        const nowObj = new Date();
+        const now = nowObj.toLocaleString("pt-PT", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+        const monthKey = getCurrentMonthKey(nowObj);
+        selectedMonthKey = monthKey;
+        pendingUndoIdx = null;
+        activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+
+        state.history.unshift({
+          title: `Esvaziar cofre (${COFFER_META[k].name})`,
+          date: now,
+          monthKey,
+          delta: -currentBal,
+          coffer: k,
+          pointsEarned: 0,
+          previousStreakStart,
+          previousClaimedMedals
+        });
+
+        saveState();
+        renderAll();
+        return;
+      }
+
+      const addConfirm = e.target.closest("[data-add-confirm]");
+      if (addConfirm) {
+        const k = addConfirm.dataset.addConfirm;
+        const inp = document.getElementById(`add-coffer-input-${k}`);
+        const amount = parseFloat(inp?.value || "");
+        if (!Number.isFinite(amount) || amount <= 0) {
+          activeCofferDrawer = { coffer: k, mode: "add", msg: "Indica um valor maior que 0 €." };
+          renderCofferDrawers();
+          return;
+        }
+
+        const rounded = Number(amount.toFixed(2));
+        state.balances[k] = Number((Number(state.balances[k] || 0) + rounded).toFixed(2));
+
+        const nowObj = new Date();
+        const now = nowObj.toLocaleString("pt-PT", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+        const monthKey = getCurrentMonthKey(nowObj);
+        selectedMonthKey = monthKey;
+        pendingUndoIdx = null;
+        activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+
+        state.history.unshift({
+          title: `Adicionar fundos (${COFFER_META[k].name})`,
+          date: now,
+          monthKey,
+          delta: rounded,
+          coffer: k
+        });
+
+        saveState();
+        renderAll();
+        return;
+      }
+
       const editBtn = e.target.closest("[data-goal-edit]");
       if (editBtn) {
         const k = editBtn.dataset.goalEdit;
@@ -2288,21 +2666,28 @@
       }
 
       const hasDetails = item.parts || item.coffer || item.pointsEarned;
-      if (hasDetails && confirm("Queres também reverter este valor nos saldos/pontos?")) {
+      const keepInCoffer = hasDetails ? confirm("Pretende manter o valor no respetivo cofre?") : true;
+
+      if (hasDetails && !keepInCoffer) {
+        const delta = Number(item.delta || 0);
         if (item.parts) {
           COFFER_KEYS.forEach((k) => {
             state.balances[k] = Math.max(0, Number((state.balances[k] - (item.parts[k] || 0)).toFixed(2)));
           });
         } else if (item.coffer) {
-          state.balances[item.coffer] = Number((state.balances[item.coffer] + Math.abs(item.delta)).toFixed(2));
-          if (item.coffer === "doacao" && item.pointsEarned) {
-            state.charityPoints = Math.max(0, Number((state.charityPoints - item.pointsEarned).toFixed(2)));
-          }
-          if (GOAL_COFFERS.includes(item.coffer) && item.previousStreakStart) {
-            state.streakStart[item.coffer] = item.previousStreakStart;
-            if (item.previousClaimedMedals) {
-              state.claimedMedals[item.coffer] = { ...item.previousClaimedMedals };
+          if (delta < 0) {
+            state.balances[item.coffer] = Number((state.balances[item.coffer] + Math.abs(delta)).toFixed(2));
+            if (item.coffer === "doacao" && item.pointsEarned) {
+              state.charityPoints = Math.max(0, Number((state.charityPoints - item.pointsEarned).toFixed(2)));
             }
+            if (GOAL_COFFERS.includes(item.coffer) && item.previousStreakStart) {
+              state.streakStart[item.coffer] = item.previousStreakStart;
+              if (item.previousClaimedMedals) {
+                state.claimedMedals[item.coffer] = { ...item.previousClaimedMedals };
+              }
+            }
+          } else if (delta > 0) {
+            state.balances[item.coffer] = Math.max(0, Number((state.balances[item.coffer] - delta).toFixed(2)));
           }
         }
       }
@@ -2514,6 +2899,7 @@
         liberdade: new Date().toISOString()
       };
       pendingUndoIdx = null;
+      activeCofferDrawer = { coffer: null, mode: null, msg: "" };
       saveState();
       renderAll();
     });
@@ -2521,7 +2907,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         const swCode = `
-          const CACHE_NAME = "cofre-magico-v12";
+          const CACHE_NAME = "cofre-magico-v14";
           self.addEventListener("install", (e) => {
             e.waitUntil(
               caches.open(CACHE_NAME).then((cache) => cache.addAll(["./", "./index.html"]))
