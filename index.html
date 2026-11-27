@@ -51,12 +51,39 @@
       margin: 0 auto;
     }
 
+    .live-clock-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 9px 14px;
+      margin-bottom: 12px;
+      font-size: 0.84rem;
+      color: var(--text);
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+    }
+
+    .live-clock-date {
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .live-clock-time {
+      font-weight: 800;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.02em;
+    }
+
     .header {
       background: linear-gradient(135deg, #4f46e5, #6366f1);
       color: #fff;
       border-radius: 20px;
       padding: 20px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       box-shadow: 0 10px 25px -10px rgba(79, 70, 229, 0.5);
     }
 
@@ -101,46 +128,62 @@
       font-weight: 800;
     }
 
-    .top-stack {
+    .rewards-section {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-top: 12px;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
-    .top-rewards-grid {
+    .bottom-rewards-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 12px;
     }
 
     @media (max-width: 560px) {
-      .top-rewards-grid {
+      .bottom-rewards-grid {
         grid-template-columns: 1fr;
       }
     }
 
-    .reward-panel {
-      background: rgba(255, 255, 255, 0.14);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: 14px;
-      padding: 12px;
+    .reward-card {
+      border-radius: 18px;
+      padding: 15px 16px;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
     }
 
-    .reward-panel-title {
-      font-size: 0.78rem;
-      font-weight: 700;
+    .reward-card-medals {
+      background: #fffbeb;
+      border: 1.5px solid #fcd34d;
+      color: #78350f;
+    }
+
+    .reward-card-stars {
+      background: #eef2ff;
+      border: 1.5px solid #a5b4fc;
+      color: #312e81;
+    }
+
+    .reward-card-charity {
+      background: #fdf2f8;
+      border: 1.5px solid #f9a8d4;
+      color: #831843;
+    }
+
+    .reward-card-title {
+      font-size: 0.82rem;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      opacity: 0.95;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
     .medal-rewards-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 6px;
+      gap: 10px;
+      margin-top: 4px;
     }
 
     @media (max-width: 520px) {
@@ -150,17 +193,20 @@
     }
 
     .medal-coffer-reward {
-      background: rgba(15, 23, 42, 0.2);
-      border-radius: 10px;
-      padding: 10px;
+      background: #ffffff;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      padding: 11px;
+      color: var(--text);
     }
 
     .medal-coffer-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 800;
+      color: #78350f;
       margin-bottom: 6px;
     }
 
@@ -168,14 +214,14 @@
       position: relative;
       width: 100%;
       height: 10px;
-      background: rgba(255, 255, 255, 0.24);
+      background: #fef3c7;
       border-radius: 999px;
       overflow: hidden;
     }
 
     .medal-track-fill {
       height: 100%;
-      background: linear-gradient(90deg, #fb923c, #e2e8f0, #fde047);
+      background: linear-gradient(90deg, #f97316, #94a3b8, #eab308);
       border-radius: 999px;
       transition: width 0.25s ease;
     }
@@ -206,33 +252,35 @@
       font-size: 0.68rem;
       font-weight: 700;
       line-height: 1.2;
-      opacity: 0.92;
+      color: #475569;
     }
 
     .stars-row {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       margin-bottom: 6px;
     }
 
     .star-icon {
-      width: 24px;
-      height: 24px;
+      width: 25px;
+      height: 25px;
       flex-shrink: 0;
     }
 
     .reward-caption {
-      font-size: 0.76rem;
-      opacity: 0.94;
+      font-size: 0.77rem;
+      color: #334155;
       line-height: 1.35;
-      margin-top: 4px;
+      margin-top: 5px;
+      font-weight: 600;
     }
 
     .points-bar-track {
       width: 100%;
       height: 10px;
-      background: rgba(255, 255, 255, 0.25);
+      background: #fce7f3;
+      border: 1px solid #fbcfe8;
       border-radius: 999px;
       overflow: hidden;
       margin: 7px 0;
@@ -240,7 +288,7 @@
 
     .points-bar-fill {
       height: 100%;
-      background: #fde047;
+      background: #db2777;
       border-radius: 999px;
       transition: width 0.25s ease;
     }
@@ -253,9 +301,9 @@
     }
 
     .btn-pts-adjust {
-      background: rgba(255, 255, 255, 0.2);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: #ffffff;
+      color: #9d174d;
+      border: 1px solid #f472b6;
       border-radius: 8px;
       padding: 4px 8px;
       font-size: 0.74rem;
@@ -263,11 +311,15 @@
       cursor: pointer;
     }
 
+    .btn-pts-adjust:hover {
+      background: #fce7f3;
+    }
+
     .pts-confirm-box {
       margin-top: 8px;
       padding: 8px 10px;
-      background: rgba(15, 23, 42, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.28);
+      background: #ffffff;
+      border: 1px solid #f472b6;
       border-radius: 10px;
       display: none;
       align-items: center;
@@ -276,7 +328,7 @@
       flex-wrap: wrap;
       font-size: 0.76rem;
       font-weight: 700;
-      color: #fff;
+      color: #831843;
     }
 
     .pts-confirm-box.open {
@@ -289,8 +341,8 @@
     }
 
     .btn-pts-yes {
-      background: #fde047;
-      color: #0f172a;
+      background: #db2777;
+      color: #ffffff;
       border: none;
       border-radius: 7px;
       padding: 4px 9px;
@@ -300,9 +352,9 @@
     }
 
     .btn-pts-no {
-      background: rgba(255, 255, 255, 0.18);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: #f8fafc;
+      color: var(--text);
+      border: 1px solid var(--border);
       border-radius: 7px;
       padding: 4px 9px;
       font-size: 0.74rem;
@@ -313,8 +365,8 @@
     .btn-bonus {
       margin-top: 8px;
       width: 100%;
-      background: #fde047;
-      color: #0f172a;
+      background: #db2777;
+      color: #ffffff;
       border: none;
       border-radius: 10px;
       padding: 8px 10px;
@@ -324,16 +376,16 @@
     }
 
     .btn-bonus:hover {
-      background: #facc15;
+      background: #be185d;
     }
 
     .choice-picker-box {
       margin-top: 8px;
       padding: 10px;
-      background: rgba(15, 23, 42, 0.36);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
       border-radius: 12px;
-      color: #fff;
+      color: var(--text);
       font-size: 0.78rem;
       line-height: 1.35;
     }
@@ -370,14 +422,21 @@
     .btn-choice-cancel {
       margin-top: 6px;
       width: 100%;
-      background: rgba(255, 255, 255, 0.16);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: #f1f5f9;
+      color: var(--text);
+      border: 1px solid var(--border);
       border-radius: 8px;
       padding: 5px 8px;
       font-size: 0.74rem;
       font-weight: 700;
       cursor: pointer;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex-shrink: 0;
     }
 
     .btn-config {
@@ -389,6 +448,56 @@
       font-size: 0.85rem;
       font-weight: 600;
       cursor: pointer;
+    }
+
+    .pin-gate {
+      display: none;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      color: var(--text);
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+    }
+
+    .pin-gate.open {
+      display: block;
+    }
+
+    .pin-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .pin-row input {
+      max-width: 180px;
+      padding: 9px 12px;
+      font-size: 0.95rem;
+      letter-spacing: 0.12em;
+    }
+
+    .pin-error {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #b91c1c;
+    }
+
+    .pin-config-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 520px) {
+      .pin-config-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     .card {
@@ -928,11 +1037,13 @@
 
     .config-panel {
       display: none;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 14px;
-      margin-top: 12px;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
+      color: var(--text);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
     }
 
     .config-panel.open {
@@ -1090,8 +1201,16 @@
       display: inline-block;
     }
 
+    .history-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     .history-toggle-btn {
-      width: 100%;
+      flex: 1;
       background: none;
       border: none;
       display: flex;
@@ -1101,6 +1220,7 @@
       cursor: pointer;
       text-align: left;
       color: var(--text);
+      min-width: 160px;
     }
 
     .history-toggle-btn h2 {
@@ -1112,6 +1232,36 @@
       font-weight: 800;
       color: var(--primary);
       line-height: 1;
+    }
+
+    .btn-clear-history {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-clear-history:hover {
+      background: #fee2e2;
+    }
+
+    .clear-history-box {
+      display: none;
+      margin-top: 10px;
+      padding: 12px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      color: #7f1d1d;
+    }
+
+    .clear-history-box.open {
+      display: block;
     }
 
     .history-body {
@@ -1261,13 +1411,20 @@
 </head>
 <body>
 
+  <div class="live-clock-bar" aria-live="polite">
+    <span class="live-clock-date" id="liveDateText">--/--/----</span>
+    <span class="live-clock-time" id="liveTimeText">--:--:--</span>
+  </div>
+
   <div class="header">
     <div class="header-top">
       <div>
         <div class="app-title">Cofre Mágico</div>
         <div class="app-sub">Aprender a construir o meu futuro e realizar sonhos</div>
       </div>
-      <button type="button" class="btn-config" id="toggleConfigBtn">Definições</button>
+      <div class="header-actions">
+        <button type="button" class="btn-config" id="toggleConfigBtn">Definições</button>
+      </div>
     </div>
 
     <div class="total-box">
@@ -1280,104 +1437,138 @@
         <strong id="activeModeLabel">Mesada</strong>
       </div>
     </div>
+  </div>
 
-    <div class="top-stack">
-      <div class="reward-panel">
-        <div class="reward-panel-title">Percurso das Medalhas • Prémios (50% Futuro • 50% Brinquedos à escolha)</div>
-        <div class="medal-rewards-grid" id="medalRewardsSummary"></div>
-        <div id="medalChoiceContainer"></div>
+  <div class="pin-gate" id="settingsPinGate">
+    <div style="font-weight: 700; font-size: 0.92rem;">Código de acesso às Definições</div>
+    <div class="small-note" style="margin-top: 2px;">Introduz o código para ver ou alterar percentagens e códigos.</div>
+    <div class="pin-row">
+      <input type="password" id="settingsPinInput" inputmode="numeric" placeholder="Código" />
+      <button type="button" class="btn-confirm-yes" id="unlockSettingsBtn">Entrar</button>
+      <button type="button" class="btn-confirm-no" id="cancelSettingsPinBtn">Cancelar</button>
+    </div>
+    <div class="pin-error" id="settingsPinError" style="display: none;">Código incorreto.</div>
+  </div>
+
+  <div class="config-panel" id="configPanel">
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <div style="font-weight: 800; font-size: 0.95rem;">Definições protegidas</div>
+      <button type="button" class="btn-mini" id="lockSettingsBtn">Bloquear</button>
+    </div>
+
+    <div style="font-weight: 700; margin-bottom: 8px;">
+      Códigos de segurança
+    </div>
+    <div class="pin-config-grid">
+      <div>
+        <label for="cfgSettingsPin">Código das Definições</label>
+        <input type="text" id="cfgSettingsPin" maxlength="12" placeholder="Ex: 1234" />
       </div>
+      <div>
+        <label for="cfgClearHistoryPin">Código para limpar histórico</label>
+        <input type="text" id="cfgClearHistoryPin" maxlength="12" placeholder="Ex: 0000" />
+      </div>
+    </div>
+    <button type="button" class="btn-secondary" style="margin-top: 0;" id="savePinsBtn">Guardar códigos</button>
+    <div class="small-note" id="pinsStatus"></div>
 
-      <div class="top-rewards-grid">
-        <div class="reward-panel">
-          <div class="reward-panel-title">Estrelas • O Meu Futuro</div>
-          <div class="stars-row" id="futureStarsRow"></div>
-          <div class="reward-caption" id="futureStarsCaption"></div>
-        </div>
+    <hr style="border: none; border-top: 1px dashed var(--border); margin: 14px 0;" />
 
-        <div class="reward-panel">
-          <div class="reward-panel-title">Pontos Solidariedade (1 € = 1 pt)</div>
-          <div class="points-bar-track">
-            <div class="points-bar-fill" id="charityPointsBar" style="width: 0%;"></div>
-          </div>
-          <div class="reward-caption" id="charityPointsCaption"></div>
-          <div class="points-actions">
-            <button type="button" class="btn-pts-adjust" id="removeOnePointBtn">-1 pt</button>
-            <button type="button" class="btn-pts-adjust" id="setPointsBtn">Corrigir pontos</button>
-          </div>
-          <div class="pts-confirm-box" id="minusOneConfirmBox">
-            <span>Baixar 1 ponto?</span>
-            <div class="pts-confirm-btns">
-              <button type="button" class="btn-pts-yes" id="confirmMinusOneBtn">Sim</button>
-              <button type="button" class="btn-pts-no" id="cancelMinusOneBtn">Não</button>
-            </div>
-          </div>
-          <button type="button" class="btn-bonus" id="claimBonusBtn" style="display: none;">
-            Receber bónus de 5,00 € (2,50 € Futuro + 2,50 € Brinquedos)
-          </button>
-          <div id="bonusChoiceContainer"></div>
-        </div>
+    <div style="font-weight: 700; margin-bottom: 8px;">
+      Percentagens – Mesada (têm de somar 100%)
+    </div>
+    <div class="pct-grid">
+      <div>
+        <label>O Meu Futuro</label>
+        <input type="number" id="mesada_poupar" min="0" max="100" />
+      </div>
+      <div>
+        <label>Sonhos</label>
+        <input type="number" id="mesada_sonhos" min="0" max="100" />
+      </div>
+      <div>
+        <label>Liberdade</label>
+        <input type="number" id="mesada_liberdade" min="0" max="100" />
+      </div>
+      <div>
+        <label>Solidariedade</label>
+        <input type="number" id="mesada_doacao" min="0" max="100" />
       </div>
     </div>
 
-    <div class="config-panel" id="configPanel">
-      <div style="color: var(--text); font-weight: 700; margin-bottom: 8px;">
-        Percentagens – Mesada (têm de somar 100%)
+    <div style="font-weight: 700; margin: 10px 0 8px;">
+      Percentagens – Presente (têm de somar 100%)
+    </div>
+    <div class="pct-grid">
+      <div>
+        <label>O Meu Futuro</label>
+        <input type="number" id="presente_poupar" min="0" max="100" />
       </div>
-      <div class="pct-grid">
-        <div>
-          <label>O Meu Futuro</label>
-          <input type="number" id="mesada_poupar" min="0" max="100" />
-        </div>
-        <div>
-          <label>Sonhos</label>
-          <input type="number" id="mesada_sonhos" min="0" max="100" />
-        </div>
-        <div>
-          <label>Liberdade</label>
-          <input type="number" id="mesada_liberdade" min="0" max="100" />
-        </div>
-        <div>
-          <label>Solidariedade</label>
-          <input type="number" id="mesada_doacao" min="0" max="100" />
-        </div>
+      <div>
+        <label>Sonhos</label>
+        <input type="number" id="presente_sonhos" min="0" max="100" />
+      </div>
+      <div>
+        <label>Liberdade</label>
+        <input type="number" id="presente_liberdade" min="0" max="100" />
+      </div>
+      <div>
+        <label>Solidariedade</label>
+        <input type="number" id="presente_doacao" min="0" max="100" />
+      </div>
+    </div>
+
+    <button type="button" class="btn-secondary" id="saveRulesBtn">Guardar regras</button>
+    <div class="small-note" id="rulesStatus"></div>
+
+    <div style="font-weight: 700; margin: 14px 0 4px;">
+      Exportar / Importar dados
+    </div>
+    <div class="backup-row">
+      <button type="button" class="btn-secondary" style="margin-top: 0;" id="exportDataBtn">Exportar ficheiro</button>
+      <button type="button" class="btn-secondary" style="margin-top: 0;" id="importDataBtn">Importar ficheiro</button>
+    </div>
+    <input type="file" id="importFileInput" accept=".json,application/json" style="display: none;" />
+
+    <button type="button" class="btn-danger-outline" id="resetAllBtn">Repor tudo a zero</button>
+  </div>
+
+  <div class="rewards-section" aria-label="Recompensas e progresso">
+    <div class="reward-card reward-card-medals">
+      <div class="reward-card-title">Percurso das Medalhas • Prémios (50% Futuro • 50% Brinquedos à escolha)</div>
+      <div class="medal-rewards-grid" id="medalRewardsSummary"></div>
+      <div id="medalChoiceContainer"></div>
+    </div>
+
+    <div class="bottom-rewards-grid">
+      <div class="reward-card reward-card-stars">
+        <div class="reward-card-title">Estrelas • O Meu Futuro</div>
+        <div class="stars-row" id="futureStarsRow"></div>
+        <div class="reward-caption" id="futureStarsCaption"></div>
       </div>
 
-      <div style="color: var(--text); font-weight: 700; margin: 10px 0 8px;">
-        Percentagens – Presente (têm de somar 100%)
-      </div>
-      <div class="pct-grid">
-        <div>
-          <label>O Meu Futuro</label>
-          <input type="number" id="presente_poupar" min="0" max="100" />
+      <div class="reward-card reward-card-charity">
+        <div class="reward-card-title">Pontos Solidariedade (1 € = 1 pt)</div>
+        <div class="points-bar-track">
+          <div class="points-bar-fill" id="charityPointsBar" style="width: 0%;"></div>
         </div>
-        <div>
-          <label>Sonhos</label>
-          <input type="number" id="presente_sonhos" min="0" max="100" />
+        <div class="reward-caption" id="charityPointsCaption"></div>
+        <div class="points-actions">
+          <button type="button" class="btn-pts-adjust" id="removeOnePointBtn">-1 pt</button>
+          <button type="button" class="btn-pts-adjust" id="setPointsBtn">Corrigir pontos</button>
         </div>
-        <div>
-          <label>Liberdade</label>
-          <input type="number" id="presente_liberdade" min="0" max="100" />
+        <div class="pts-confirm-box" id="minusOneConfirmBox">
+          <span>Baixar 1 ponto?</span>
+          <div class="pts-confirm-btns">
+            <button type="button" class="btn-pts-yes" id="confirmMinusOneBtn">Sim</button>
+            <button type="button" class="btn-pts-no" id="cancelMinusOneBtn">Não</button>
+          </div>
         </div>
-        <div>
-          <label>Solidariedade</label>
-          <input type="number" id="presente_doacao" min="0" max="100" />
-        </div>
+        <button type="button" class="btn-bonus" id="claimBonusBtn" style="display: none;">
+          Receber bónus de 5,00 € (2,50 € Futuro + 2,50 € Brinquedos)
+        </button>
+        <div id="bonusChoiceContainer"></div>
       </div>
-
-      <button type="button" class="btn-secondary" id="saveRulesBtn">Guardar regras</button>
-      <div class="small-note" id="rulesStatus"></div>
-
-      <div style="color: var(--text); font-weight: 700; margin: 14px 0 4px;">
-        Exportar / Importar dados
-      </div>
-      <div class="backup-row">
-        <button type="button" class="btn-secondary" style="margin-top: 0;" id="exportDataBtn">Exportar ficheiro</button>
-        <button type="button" class="btn-secondary" style="margin-top: 0;" id="importDataBtn">Importar ficheiro</button>
-      </div>
-      <input type="file" id="importFileInput" accept=".json,application/json" style="display: none;" />
-
-      <button type="button" class="btn-danger-outline" id="resetAllBtn">Repor tudo a zero</button>
     </div>
   </div>
 
@@ -1576,10 +1767,24 @@
   </div>
 
   <div class="card">
-    <button type="button" class="history-toggle-btn" id="toggleHistoryBtn" aria-expanded="true">
-      <h2>Últimos movimentos</h2>
-      <span class="history-arrow" id="historyArrow">▾</span>
-    </button>
+    <div class="history-top-bar">
+      <button type="button" class="history-toggle-btn" id="toggleHistoryBtn" aria-expanded="true">
+        <h2>Últimos movimentos</h2>
+        <span class="history-arrow" id="historyArrow">▾</span>
+      </button>
+      <button type="button" class="btn-clear-history" id="openClearHistoryBtn">Limpar histórico</button>
+    </div>
+
+    <div class="clear-history-box" id="clearHistoryBox">
+      <div style="font-weight: 700;">Apagar todo o histórico de movimentos (os saldos das caixas não mudam)</div>
+      <div class="pin-row">
+        <input type="password" id="clearHistoryPinInput" inputmode="numeric" placeholder="Código" />
+        <button type="button" class="btn-drawer-danger" id="confirmClearHistoryBtn">Limpar tudo</button>
+        <button type="button" class="btn-drawer-cancel" id="cancelClearHistoryBtn">Cancelar</button>
+      </div>
+      <div class="pin-error" id="clearHistoryPinError" style="display: none;">Código incorreto.</div>
+    </div>
+
     <div class="history-body" id="historyBody">
       <div id="historyList">
         <div class="small-note">Ainda não existem movimentos registados.</div>
@@ -1594,22 +1799,26 @@
     const STAR_MILESTONES = [25, 50, 75, 100, 150];
     const POINTS_PER_BONUS = 10;
     const BONUS_AMOUNT = 5;
+    const STREAK_ANCHOR_ISO = "2026-11-26T00:00:00.000Z";
+    const STREAK_ANCHOR_MS = Date.parse(STREAK_ANCHOR_ISO);
+    const DEFAULT_SETTINGS_PIN = "1234";
+    const DEFAULT_CLEAR_HISTORY_PIN = "0000";
 
     const MEDAL_CONFIG = {
       liberdade: {
         label: "Liberdade",
         tiers: [
-          { key: "bronze", name: "Bronze", days: 15, reward: 1, fill: "#fb923c", stroke: "#fdba74" },
-          { key: "silver", name: "Prata", days: 30, reward: 2, fill: "#e2e8f0", stroke: "#f8fafc" },
-          { key: "gold", name: "Ouro", days: 60, reward: 5, fill: "#fde047", stroke: "#facc15" }
+          { key: "bronze", name: "Bronze", days: 15, reward: 1, fill: "#fb923c", stroke: "#ea580c" },
+          { key: "silver", name: "Prata", days: 30, reward: 2, fill: "#cbd5e1", stroke: "#64748b" },
+          { key: "gold", name: "Ouro", days: 60, reward: 5, fill: "#facc15", stroke: "#ca8a04" }
         ]
       },
       sonhos: {
         label: "Sonhos",
         tiers: [
-          { key: "bronze", name: "Bronze", days: 30, reward: 1, fill: "#fb923c", stroke: "#fdba74" },
-          { key: "silver", name: "Prata", days: 60, reward: 2, fill: "#e2e8f0", stroke: "#f8fafc" },
-          { key: "gold", name: "Ouro", days: 120, reward: 5, fill: "#fde047", stroke: "#facc15" }
+          { key: "bronze", name: "Bronze", days: 30, reward: 1, fill: "#fb923c", stroke: "#ea580c" },
+          { key: "silver", name: "Prata", days: 60, reward: 2, fill: "#cbd5e1", stroke: "#64748b" },
+          { key: "gold", name: "Ouro", days: 120, reward: 5, fill: "#facc15", stroke: "#ca8a04" }
         ]
       }
     };
@@ -1639,6 +1848,10 @@
 
     const DEFAULT_STATE = {
       mode: "mesada",
+      pins: {
+        settings: DEFAULT_SETTINGS_PIN,
+        clearHistory: DEFAULT_CLEAR_HISTORY_PIN
+      },
       balances: {
         poupar: 0,
         sonhos: 0,
@@ -1654,8 +1867,8 @@
         liberdade: { title: "", target: 0 }
       },
       streakStart: {
-        sonhos: new Date().toISOString(),
-        liberdade: new Date().toISOString()
+        sonhos: STREAK_ANCHOR_ISO,
+        liberdade: STREAK_ANCHOR_ISO
       },
       claimedMedals: {
         sonhos: { bronze: false, silver: false, gold: false },
@@ -1666,6 +1879,19 @@
       history: []
     };
 
+    function clampStreakStartToAnchor(isoValue) {
+      const parsedMs = isoValue ? new Date(isoValue).getTime() : NaN;
+      if (!Number.isFinite(parsedMs) || parsedMs > STREAK_ANCHOR_MS) {
+        return STREAK_ANCHOR_ISO;
+      }
+      return new Date(parsedMs).toISOString();
+    }
+
+    function normalizePin(val, fallback) {
+      const str = String(val ?? "").trim();
+      return str.length > 0 ? str : fallback;
+    }
+
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
@@ -1673,6 +1899,10 @@
         const parsed = JSON.parse(raw);
         return {
           mode: parsed.mode === "presente" ? "presente" : "mesada",
+          pins: {
+            settings: normalizePin(parsed.pins?.settings, DEFAULT_SETTINGS_PIN),
+            clearHistory: normalizePin(parsed.pins?.clearHistory, DEFAULT_CLEAR_HISTORY_PIN)
+          },
           balances: { ...DEFAULT_STATE.balances, ...(parsed.balances || {}) },
           rules: {
             mesada: { ...DEFAULT_STATE.rules.mesada, ...(parsed.rules?.mesada || {}) },
@@ -1683,8 +1913,8 @@
             liberdade: { ...DEFAULT_STATE.goals.liberdade, ...(parsed.goals?.liberdade || {}) }
           },
           streakStart: {
-            sonhos: parsed.streakStart?.sonhos || new Date().toISOString(),
-            liberdade: parsed.streakStart?.liberdade || new Date().toISOString()
+            sonhos: clampStreakStartToAnchor(parsed.streakStart?.sonhos),
+            liberdade: clampStreakStartToAnchor(parsed.streakStart?.liberdade)
           },
           claimedMedals: {
             sonhos: { ...DEFAULT_STATE.claimedMedals.sonhos, ...(parsed.claimedMedals?.sonhos || {}) },
@@ -1700,13 +1930,34 @@
     }
 
     let state = loadState();
+    saveState();
     let selectedMonthKey = "";
     let pendingUndoIdx = null;
     let pendingDeleteIdx = null;
     let bonusChoiceOpen = false;
     let activeCofferDrawer = { coffer: null, mode: null, msg: "" };
     let historyCollapsed = false;
+    let settingsUnlocked = false;
     const openGoalEditors = { sonhos: false, liberdade: false };
+
+    function updateLiveClock() {
+      const now = new Date();
+      const dateStr = now.toLocaleDateString("pt-PT", {
+        weekday: "short",
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      });
+      const timeStr = now.toLocaleTimeString("pt-PT", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit"
+      });
+      const dateEl = document.getElementById("liveDateText");
+      const timeEl = document.getElementById("liveTimeText");
+      if (dateEl) dateEl.textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+      if (timeEl) timeEl.textContent = timeStr;
+    }
 
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -1784,7 +2035,6 @@
       return result;
     }
 
-    // Divide um valor total em 50% Futuro e 50% num cofre de brinquedos escolhido ("liberdade" ou "sonhos")
     function splitFutureAndToyChoice(totalAmount, toyCoffer) {
       const cents = Math.round(Number(totalAmount || 0) * 100);
       const futureCents = Math.floor(cents / 2);
@@ -1807,20 +2057,8 @@
       };
     }
 
-    function applyMedalRewardWithChoice(cofferKey, tierObj, toyCoffer, nowObj, monthKey, nowStr) {
-      const split = splitFutureAndToyChoice(tierObj.reward, toyCoffer);
-
-      state.balances.poupar = Number((state.balances.poupar + split.futureEur).toFixed(2));
-      state.balances[split.targetToy] = Number((state.balances[split.targetToy] + split.toyEur).toFixed(2));
-
-      const toyLabel = split.targetToy === "sonhos" ? "Sonhos" : "Liberdade";
-      state.history.unshift({
-        title: `Medalha ${tierObj.name} (${MEDAL_CONFIG[cofferKey].label}) → +${fmtEUR(split.futureEur)} Futuro & +${fmtEUR(split.toyEur)} ${toyLabel}`,
-        date: nowStr,
-        monthKey,
-        delta: tierObj.reward,
-        parts: split.parts
-      });
+    function toCalendarDayUtcMs(dateObj) {
+      return Date.UTC(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
     }
 
     function evaluateMedalRewards() {
@@ -1852,7 +2090,6 @@
             const half = Number((tier.reward / 2).toFixed(2));
             const otherHalf = Number((tier.reward - half).toFixed(2));
 
-            // Aplica logo a metade do futuro e regista a escolha da metade dos brinquedos
             state.balances.poupar = Number((state.balances.poupar + half).toFixed(2));
             state.pendingMedalChoices.push({
               id: `${key}-${tier.key}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
@@ -1928,10 +2165,13 @@
 
     function getDaysWithoutWithdraw(cofferKey) {
       const startIso = state.streakStart?.[cofferKey];
-      const startMs = startIso ? new Date(startIso).getTime() : Date.now();
-      if (!Number.isFinite(startMs)) return 0;
-      const diffMs = Math.max(0, Date.now() - startMs);
-      return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const startDate = startIso ? new Date(startIso) : new Date(STREAK_ANCHOR_MS);
+      if (!Number.isFinite(startDate.getTime())) return 0;
+
+      const startDayMs = toCalendarDayUtcMs(startDate);
+      const todayDayMs = toCalendarDayUtcMs(new Date());
+      const diffDays = Math.floor((todayDayMs - startDayMs) / (1000 * 60 * 60 * 24));
+      return Math.max(0, diffDays);
     }
 
     function getMedalStatus(cofferKey) {
@@ -1952,7 +2192,7 @@
 
     function renderMedalSvg(filled, fillColor, strokeColor) {
       const fill = filled ? fillColor : "none";
-      const stroke = filled ? strokeColor : "rgba(255,255,255,0.65)";
+      const stroke = filled ? strokeColor : "#94a3b8";
       return `
         <svg class="medal-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M8.5 3h3l1 4h-3l-1-4zm4 0h3l1 4h-3l-1-4z" fill="${filled ? "#ef4444" : "none"}" stroke="${stroke}" stroke-width="1.4" />
@@ -2035,8 +2275,8 @@
       const starsRow = document.getElementById("futureStarsRow");
       starsRow.innerHTML = STAR_MILESTONES.map((milestone, idx) => {
         const filled = idx < earnedStars;
-        const fillColor = filled ? "#fde047" : "none";
-        const strokeColor = filled ? "#facc15" : "rgba(255,255,255,0.75)";
+        const fillColor = filled ? "#eab308" : "none";
+        const strokeColor = filled ? "#ca8a04" : "#818cf8";
         return `
           <svg class="star-icon" viewBox="0 0 24 24" aria-label="Marco ${milestone}€">
             <path
@@ -2214,7 +2454,7 @@
           </div>
           <div class="coffer-medals-row">${slotsHtml}</div>
           <div class="medal-timer">
-            <strong>${status.days} ${status.days === 1 ? "dia" : "dias"}</strong> sem retirar • ${status.nextLabel}
+            <strong>${status.days} ${status.days === 1 ? "dia" : "dias"}</strong> sem retirar (desde 26/11/2026, dia civil) • ${status.nextLabel}
           </div>
         `;
       });
@@ -2420,6 +2660,8 @@
     }
 
     function syncConfigInputs() {
+      document.getElementById("cfgSettingsPin").value = state.pins?.settings || DEFAULT_SETTINGS_PIN;
+      document.getElementById("cfgClearHistoryPin").value = state.pins?.clearHistory || DEFAULT_CLEAR_HISTORY_PIN;
       ["mesada", "presente"].forEach((mode) => {
         COFFER_KEYS.forEach((k) => {
           document.getElementById(`${mode}_${k}`).value = state.rules[mode][k];
@@ -2622,6 +2864,105 @@
       el.className = `feedback-banner ${type}`;
     }
 
+    document.getElementById("toggleConfigBtn").addEventListener("click", () => {
+      const panel = document.getElementById("configPanel");
+      const gate = document.getElementById("settingsPinGate");
+
+      if (panel.classList.contains("open")) {
+        panel.classList.remove("open");
+        settingsUnlocked = false;
+        return;
+      }
+
+      if (settingsUnlocked) {
+        panel.classList.add("open");
+        gate.classList.remove("open");
+        return;
+      }
+
+      gate.classList.toggle("open");
+      document.getElementById("settingsPinError").style.display = "none";
+      const inp = document.getElementById("settingsPinInput");
+      inp.value = "";
+      if (gate.classList.contains("open")) inp.focus();
+    });
+
+    document.getElementById("unlockSettingsBtn").addEventListener("click", () => {
+      const entered = document.getElementById("settingsPinInput").value.trim();
+      const expected = state.pins?.settings || DEFAULT_SETTINGS_PIN;
+      if (entered === expected) {
+        settingsUnlocked = true;
+        document.getElementById("settingsPinGate").classList.remove("open");
+        document.getElementById("settingsPinError").style.display = "none";
+        document.getElementById("configPanel").classList.add("open");
+      } else {
+        document.getElementById("settingsPinError").style.display = "block";
+      }
+    });
+
+    document.getElementById("cancelSettingsPinBtn").addEventListener("click", () => {
+      document.getElementById("settingsPinGate").classList.remove("open");
+      document.getElementById("settingsPinError").style.display = "none";
+    });
+
+    document.getElementById("lockSettingsBtn").addEventListener("click", () => {
+      settingsUnlocked = false;
+      document.getElementById("configPanel").classList.remove("open");
+    });
+
+    document.getElementById("savePinsBtn").addEventListener("click", () => {
+      const nextSettingsPin = document.getElementById("cfgSettingsPin").value.trim();
+      const nextClearPin = document.getElementById("cfgClearHistoryPin").value.trim();
+      const statusEl = document.getElementById("pinsStatus");
+
+      if (!nextSettingsPin || !nextClearPin) {
+        statusEl.textContent = "Ambos os códigos têm de ter pelo menos 1 carácter.";
+        return;
+      }
+
+      state.pins = {
+        settings: nextSettingsPin,
+        clearHistory: nextClearPin
+      };
+      saveState();
+      statusEl.textContent = "Códigos guardados com sucesso!";
+    });
+
+    document.getElementById("openClearHistoryBtn").addEventListener("click", () => {
+      const box = document.getElementById("clearHistoryBox");
+      document.getElementById("clearHistoryPinError").style.display = "none";
+      const inp = document.getElementById("clearHistoryPinInput");
+      inp.value = "";
+      box.classList.toggle("open");
+      if (box.classList.contains("open")) inp.focus();
+    });
+
+    document.getElementById("cancelClearHistoryBtn").addEventListener("click", () => {
+      document.getElementById("clearHistoryBox").classList.remove("open");
+      document.getElementById("clearHistoryPinError").style.display = "none";
+    });
+
+    document.getElementById("confirmClearHistoryBtn").addEventListener("click", () => {
+      const entered = document.getElementById("clearHistoryPinInput").value.trim();
+      const expected = state.pins?.clearHistory || DEFAULT_CLEAR_HISTORY_PIN;
+      const errEl = document.getElementById("clearHistoryPinError");
+
+      if (entered !== expected) {
+        errEl.style.display = "block";
+        return;
+      }
+
+      errEl.style.display = "none";
+      state.history = [];
+      pendingUndoIdx = null;
+      pendingDeleteIdx = null;
+      document.getElementById("clearHistoryBox").classList.remove("open");
+      saveState();
+      renderMonthlySection();
+      renderHistory();
+      showFeedbackBanner("Histórico de movimentos limpo. Os saldos dos cofres mantiveram-se iguais.", "info");
+    });
+
     document.getElementById("toggleHistoryBtn").addEventListener("click", () => {
       historyCollapsed = !historyCollapsed;
       renderHistoryCollapse();
@@ -2698,6 +3039,7 @@
           pendingDeleteIdx = null;
           bonusChoiceOpen = false;
           activeCofferDrawer = { coffer: null, mode: null, msg: "" };
+          saveState();
           renderAll();
           showFeedbackBanner("Dados importados com sucesso!", "info");
         } catch {
@@ -3142,10 +3484,6 @@
       }
     });
 
-    document.getElementById("toggleConfigBtn").addEventListener("click", () => {
-      document.getElementById("configPanel").classList.toggle("open");
-    });
-
     document.getElementById("saveRulesBtn").addEventListener("click", () => {
       const statusEl = document.getElementById("rulesStatus");
       const nextRules = { mesada: {}, presente: {} };
@@ -3177,12 +3515,14 @@
       if (!confirm("Tens a certeza de que queres apagar todos os saldos e movimentos?")) return;
       const keepRules = state.rules;
       const keepGoals = state.goals;
+      const keepPins = state.pins;
       state = structuredClone(DEFAULT_STATE);
       state.rules = keepRules;
       state.goals = keepGoals;
+      state.pins = keepPins;
       state.streakStart = {
-        sonhos: new Date().toISOString(),
-        liberdade: new Date().toISOString()
+        sonhos: STREAK_ANCHOR_ISO,
+        liberdade: STREAK_ANCHOR_ISO
       };
       pendingUndoIdx = null;
       pendingDeleteIdx = null;
@@ -3195,7 +3535,7 @@
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         const swCode = `
-          const CACHE_NAME = "cofre-magico-v14";
+          const CACHE_NAME = "cofre-magico-v17";
           self.addEventListener("install", (e) => {
             e.waitUntil(
               caches.open(CACHE_NAME).then((cache) => cache.addAll(["./", "./index.html"]))
@@ -3221,6 +3561,8 @@
       });
     }
 
+    updateLiveClock();
+    setInterval(updateLiveClock, 1000);
     evaluateMedalRewards();
     renderAll();
   </script>
